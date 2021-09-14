@@ -1,0 +1,5 @@
+{% comment %} {% for order in sells %}
+
+{{ order.item_order.count }} {{order.item_bar.all.aggregate(Sum('quantity')) }}
+{% endfor %} {% endcomment %}
+{{sells.quantity__sum}}
