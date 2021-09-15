@@ -4,6 +4,15 @@ from django.db.models.expressions import F
 from django.db.models.fields import DecimalField
 
 # Create your models here.
+class Group(models.Model):
+    name = models.CharField(verbose_name="nawy group", max_length=250)
+
+    def __str__(self):
+        return self.name
+
+    def __unicode__(self):
+        return
+
 
 
 class Region(models.Model):
@@ -56,17 +65,8 @@ class LocalCompany(models.Model):
         totalls = 0
         for totall in self.sell_compnay.all():
             totalls = totalls + totall.totallint
-        return str(totalls)
+        return str(float('{:.2f}'.format(totalls)))
 
-
-class Group(models.Model):
-    name = models.CharField(verbose_name="nawy group", max_length=250)
-
-    def __str__(self):
-        return self.name
-
-    def __unicode__(self):
-        return
 
 
 class Item(models.Model):
@@ -95,8 +95,10 @@ class Item(models.Model):
         mawe = 0
         krin = self.item_order.aggregate(Sum('quantity'))['quantity__sum']
         frosh = self.item_sell.aggregate(Sum('quantity'))['quantity__sum']
-        if krin == "null" and frosh == 'null':
+        if krin and frosh:
             mawe = krin - frosh
+        if frosh:
+            mawe = 0 - frosh
         return mawe
 
     @property
@@ -105,6 +107,8 @@ class Item(models.Model):
 
 
 class Sell(models.Model):
+    group = models.ForeignKey("Group", verbose_name="naw group",
+                              on_delete=models.CASCADE, related_name="sell_group")
     local = models.ForeignKey("LocalCompany", verbose_name="naw kryar",
                               on_delete=models.CASCADE, related_name="sell_compnay")
     discount = models.DecimalField(
@@ -116,12 +120,17 @@ class Sell(models.Model):
 
     @property
     def totall(self):
-        total = float('{:.2f}'.format(self.sell_detail.annotate(answer=F('price') * F('quantity')).aggregate(total=Sum('answer'))['total']))
+        total = 0
+        if len(self.sell_detail.all()):
+            total = float('{:.2f}'.format(self.sell_detail.annotate(answer=F('price') * F('quantity')).aggregate(total=Sum('answer'))['total']))
         return str(total)
 
     @property
     def totallint(self):
-        return self.sell_detail.annotate(answer=F('price') * F('quantity')).aggregate(total=Sum('answer'))['total']
+        tot = 0
+        if len(self.sell_detail.all()):
+            tot = self.sell_detail.annotate(answer=F('price') * F('quantity')).aggregate(total=Sum('answer'))['total']
+        return tot
 
 
 class SellDetail(models.Model):
@@ -148,12 +157,14 @@ class SellDetail(models.Model):
 
 
 class Order(models.Model):
-    local = models.ForeignKey("TradeCompany", verbose_name="naw compaya",
+    group = models.ForeignKey("Group", verbose_name="naw group",
+                              on_delete=models.CASCADE, related_name="order_group")
+    trader = models.ForeignKey("TradeCompany", verbose_name="naw compaya",
                               on_delete=models.CASCADE, related_name="order_compnay")
     date = models.DateTimeField(verbose_name="rekwt", auto_now_add=True)
 
     def __str__(self):
-        return "wasl " + str(self.id)
+        return "wasl dawakary" + str(self.id)
 
 
 class OrderDetail(models.Model):
@@ -165,27 +176,3 @@ class OrderDetail(models.Model):
     price = models.DecimalField(
         verbose_name="nrx", max_digits=5, decimal_places=2)
     date = models.DateTimeField(verbose_name="rekwt", auto_now_add=True)
-
-
-class Bar(models.Model):
-    trader = models.ForeignKey("TradeCompany", verbose_name="naw kryar",
-                               on_delete=models.CASCADE, related_name="Bar_compnay")
-    date = models.DateTimeField(verbose_name="rekwt", auto_now_add=True)
-    date = models.DateTimeField(verbose_name="rekwt", auto_now_add=True)
-
-    def __str__(self):
-        return "wasl bar " + str(self.id)
-
-
-class BarDetail(models.Model):
-    bar = models.ForeignKey("Bar", verbose_name="wasl",
-                            on_delete=models.CASCADE, related_name="Bar_detail")
-    item = models.ForeignKey("Item", verbose_name="naw kala",
-                             on_delete=models.CASCADE, related_name="item_bar")
-    quantity = models.CharField(verbose_name="dane", max_length=250)
-    price = models.DecimalField(
-        verbose_name="nrx", max_digits=5, decimal_places=2)
-    date = models.DateTimeField(verbose_name="rekwt", auto_now_add=True)
-
-    def __str__(self):
-        return "hawtw kala " + str(self.id)

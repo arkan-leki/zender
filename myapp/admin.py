@@ -28,15 +28,6 @@ class OrderAdmin(admin.ModelAdmin):
 
 admin.site.register(Order, OrderAdmin)
 
-class BardetailAdmin(admin.TabularInline):
-    model = BarDetail
-
-class BarAdmin(admin.ModelAdmin):
-    model = Bar
-    inlines = [BardetailAdmin]
-
-admin.site.register(Bar, BarAdmin)
-
 admin.site.register(LocalCompany)
 # admin.site.register(SellDetail)
 
