@@ -1,13 +1,91 @@
 from django import forms
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import render
+from rest_framework import viewsets
 from .models import *
+from .serializer import *
 from django.forms import ModelForm
 # Create your views here.
 
 
-def index(request):
-    context = {
-        'sells': Item.objects.all()
-    }
-    return render(request, 'index.html', context)
+# ViewSets define the view behavior.
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+
+class LocalViewSet(viewsets.ModelViewSet):
+    queryset = LocalCompany.objects.all()
+    serializer_class = LocalSerializer
+
+
+class LocalXViewSet(viewsets.ModelViewSet):
+    queryset = LocalCompany.objects.all()
+    serializer_class = LocalXSerializer
+
+
+class TraderViewSet(viewsets.ModelViewSet):
+    queryset = TradeCompany.objects.all()
+    serializer_class = TraderSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['group']
+
+
+class ItemViewSet(viewsets.ModelViewSet):
+    queryset = Item.objects.all()
+    serializer_class = ItemSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['group']
+
+
+class GroupViewSet(viewsets.ModelViewSet):
+    queryset = Group.objects.all()
+    serializer_class = GroupSerializer
+
+
+class ItemXViewSet(viewsets.ModelViewSet):
+    queryset = Item.objects.all()
+    serializer_class = ItemXSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['group']
+
+
+class SellDetailViewSet(viewsets.ModelViewSet):
+    queryset = SellDetail.objects.all()
+    serializer_class = SellDetailSerializer
+
+
+class SellXDetailViewSet(viewsets.ModelViewSet):
+    queryset = SellDetail.objects.all()
+    serializer_class = SellXDetailSerializer
+
+
+class SellViewSet(viewsets.ModelViewSet):
+    queryset = Sell.objects.all()
+    serializer_class = SellSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['group']
+
+
+class SellXViewSet(viewsets.ModelViewSet):
+    queryset = Sell.objects.all()
+    serializer_class = SellXSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['group']
+
+
+class OrderViewSet(viewsets.ModelViewSet):
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['group']
+
+
+class OrderedViewSet(viewsets.ModelViewSet):
+    queryset = OrderDetail.objects.all()
+    serializer_class = OrderedSerializer
+
+
+class RegionViewSet(viewsets.ModelViewSet):
+    queryset = Region.objects.all()
+    serializer_class = RegionSerializer

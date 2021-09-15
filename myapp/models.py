@@ -6,7 +6,7 @@ from django.db.models.fields import DecimalField
 # Create your models here.
 class Group(models.Model):
     name = models.CharField(verbose_name="nawy group", max_length=250)
-
+    phone =  models.CharField(verbose_name="jmary mobile", max_length=250 ,blank=True, null=True)
     def __str__(self):
         return self.name
 
@@ -14,6 +14,15 @@ class Group(models.Model):
         return
 
 
+class Vendor(models.Model):
+    name = models.CharField(verbose_name="nawy mandub", max_length=250)
+    phone =  models.CharField(verbose_name="jmary mobile", max_length=250,blank=True, null=True)
+
+    def __str__(self):
+        return self.name
+
+    def __unicode__(self):
+        return
 
 class Region(models.Model):
     name = models.CharField(verbose_name="nawche", max_length=250)
@@ -31,8 +40,8 @@ class TradeCompany(models.Model):
     name = models.CharField(verbose_name="naw companya", max_length=250)
     code = models.CharField("cody company", max_length=150)
     date = models.DateTimeField(verbose_name="rekwt", auto_now_add=True)
-    branch = models.CharField(
-        verbose_name="grwpy companya", max_length=250, blank=True, null=True)
+    group = models.ForeignKey("Group", verbose_name="naw group",
+                              on_delete=models.CASCADE, related_name="trader_group")
 
     def __str__(self):
         return self.name
@@ -107,6 +116,8 @@ class Item(models.Model):
 
 
 class Sell(models.Model):
+    vendor = models.ForeignKey("Vendor", verbose_name="naw mandub",
+                              on_delete=models.CASCADE, related_name="sell_group")
     group = models.ForeignKey("Group", verbose_name="naw group",
                               on_delete=models.CASCADE, related_name="sell_group")
     local = models.ForeignKey("LocalCompany", verbose_name="naw kryar",
