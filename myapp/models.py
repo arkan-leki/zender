@@ -1,12 +1,41 @@
 from django.db import models
 from django.db.models.aggregates import Sum
 from django.db.models.expressions import F
-from django.db.models.fields import DecimalField
+from django.db.models.fields.related import ManyToManyField
 
 # Create your models here.
+
+
 class Group(models.Model):
     name = models.CharField(verbose_name="nawy group", max_length=250)
-    phone =  models.CharField(verbose_name="jmary mobile", max_length=250 ,blank=True, null=True)
+    phone = models.CharField(verbose_name="jmary mobile",
+                             max_length=250, blank=True, null=True)
+
+    def __str__(self):
+        return self.name
+
+    def __unicode__(self):
+        return
+
+
+class Epmploye(models.Model):
+    name = models.CharField(verbose_name="nawy krekar", max_length=250)
+    phone = models.CharField(verbose_name="jmary mobile",
+                             max_length=250, blank=True, null=True)
+
+    def __str__(self):
+        return self.name
+
+    def __unicode__(self):
+        return
+
+
+class Region(models.Model):
+    name = models.CharField(verbose_name="nawche", max_length=250)
+    code = models.CharField("zip code", max_length=150)
+    date = models.DateTimeField(
+        verbose_name="rekwt", auto_now_add=True, blank=True)
+
     def __str__(self):
         return self.name
 
@@ -16,18 +45,11 @@ class Group(models.Model):
 
 class Vendor(models.Model):
     name = models.CharField(verbose_name="nawy mandub", max_length=250)
-    phone =  models.CharField(verbose_name="jmary mobile", max_length=250,blank=True, null=True)
-
-    def __str__(self):
-        return self.name
-
-    def __unicode__(self):
-        return
-
-class Region(models.Model):
-    name = models.CharField(verbose_name="nawche", max_length=250)
-    code = models.CharField("zip code", max_length=150)
-    date = models.DateTimeField(verbose_name="rekwt", auto_now_add=True)
+    phone = models.CharField(verbose_name="jmary mobile",
+                             max_length=250, blank=True, null=True)
+    regions = models.ManyToManyField("region")
+    group = models.ForeignKey("Group", verbose_name="naw group",
+                              on_delete=models.CASCADE, related_name="vendor_group", null=True)
 
     def __str__(self):
         return self.name
@@ -39,15 +61,33 @@ class Region(models.Model):
 class TradeCompany(models.Model):
     name = models.CharField(verbose_name="naw companya", max_length=250)
     code = models.CharField("cody company", max_length=150)
-    date = models.DateTimeField(verbose_name="rekwt", auto_now_add=True)
+    date = models.DateTimeField(
+        verbose_name="rekwt", auto_now_add=True, blank=True)
     group = models.ForeignKey("Group", verbose_name="naw group",
                               on_delete=models.CASCADE, related_name="trader_group")
+    
 
     def __str__(self):
         return self.name
 
     def __unicode__(self):
         return
+    
+    @property
+    def mawe(self):
+        paylaon = 0
+        buy = 0
+        for pay in self.loan_compnay.all():
+            paylaon = paylaon + pay.bank.loan
+        for laon in self.order_compnay.all():
+            buy = buy + laon.totallint
+        if paylaon and buy:
+            mawe =  buy - paylaon
+        elif buy:
+            mawe =  buy
+        elif paylaon:
+            mawe =  paylaon
+        return mawe
 
 
 class LocalCompany(models.Model):
@@ -61,37 +101,8 @@ class LocalCompany(models.Model):
                              max_length=150, blank=True, null=True)
     owner_name = models.CharField(
         verbose_name="naw xawenar", max_length=250, blank=True, null=True)
-    date = models.DateTimeField(verbose_name="rekwt", auto_now_add=True)
-
-    def __str__(self):
-        return self.name
-
-    def __unicode__(self):
-        return
-
-    @property
-    def totallSell(self):
-        totalls = 0
-        for totall in self.sell_compnay.all():
-            totalls = totalls + totall.totallint
-        return str(float('{:.2f}'.format(totalls)))
-
-
-
-class Item(models.Model):
-    group = models.ForeignKey("Group", verbose_name="naw group",
-                              on_delete=models.CASCADE, related_name="item_group")
-    name = models.CharField(verbose_name="nawy mawad", max_length=250)
-    bag = models.CharField(verbose_name="jor bar", max_length=250)
-    quantity = models.CharField(verbose_name="dane", max_length=250)
-    barcode = models.CharField("cody mewad", max_length=150)
-    price = models.DecimalField(
-        verbose_name="nrx kiren", max_digits=5, decimal_places=2)
-    addprice = models.DecimalField(
-        verbose_name="reje qazanc", max_digits=5, decimal_places=2)
-    trader = models.ForeignKey("TradeCompany", verbose_name="naw companyia",
-                               on_delete=models.CASCADE, related_name="item_compnay")
-    date = models.DateTimeField(verbose_name="rekwt", auto_now_add=True)
+    date = models.DateTimeField(
+        verbose_name="rekwt", auto_now_add=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -101,12 +112,71 @@ class Item(models.Model):
 
     @property
     def mawe(self):
+        paylaon = 0
+        buy = 0
+        for pay in self.payment_compnay.all():
+            paylaon = paylaon + pay.bank.income
+        for laon in self.sell_compnay.all():
+            buy = buy + laon.totallint
+        if paylaon and buy:
+            mawe =  buy - paylaon
+        elif buy:
+            mawe =  buy
+        elif paylaon:
+            mawe =  paylaon
+        return mawe
+
+    @property
+    def totallPay(self):
+        totalls = 0
+        for pay in self.payment_compnay.all():
+            totalls = totalls + pay.bank.income
+        return str(float('{:.2f}'.format(totalls)))
+    
+    @property
+    def totallSell(self):
+        totalls = 0
+        for totall in self.sell_compnay.all():
+            totalls = totalls + totall.totallint
+        return str(float('{:.2f}'.format(totalls)))
+
+
+class Item(models.Model):
+    group = models.ForeignKey("Group", verbose_name="naw group",
+                              on_delete=models.CASCADE, related_name="item_group")
+    name = models.CharField(verbose_name="nawy mawad", max_length=250)
+    bag = models.CharField(verbose_name="jor bar", max_length=250)
+    wight = models.DecimalField(
+        verbose_name="wazn kala", max_digits=5, decimal_places=2,default="0.0")
+    quantity = models.IntegerField(verbose_name="dane")
+    barcode = models.CharField("cody mewad", max_length=150)
+    price = models.DecimalField(
+        verbose_name="nrx kiren", max_digits=5, decimal_places=2)
+    addprice = models.DecimalField(
+        verbose_name="reje qazanc", max_digits=5, decimal_places=2)
+    trader = models.ForeignKey("TradeCompany", verbose_name="naw companyia",
+                               on_delete=models.CASCADE, related_name="item_compnay")
+    date = models.DateTimeField(
+        verbose_name="rekwt", auto_now_add=True, blank=True)
+
+    def __str__(self):
+        return self.name
+
+    def __unicode__(self):
+        return
+
+    @property
+    def wightAll(self):
+        return self.wight * self.quantity
+
+    @property
+    def mawe(self):
         mawe = 0
         krin = self.item_order.aggregate(Sum('quantity'))['quantity__sum']
         frosh = self.item_sell.aggregate(Sum('quantity'))['quantity__sum']
         if krin and frosh:
             mawe = krin - frosh
-        if frosh:
+        elif frosh:
             mawe = 0 - frosh
         return mawe
 
@@ -117,14 +187,15 @@ class Item(models.Model):
 
 class Sell(models.Model):
     vendor = models.ForeignKey("Vendor", verbose_name="naw mandub",
-                              on_delete=models.CASCADE, related_name="sell_group")
+                               on_delete=models.CASCADE, related_name="sell_group")
     group = models.ForeignKey("Group", verbose_name="naw group",
                               on_delete=models.CASCADE, related_name="sell_group")
     local = models.ForeignKey("LocalCompany", verbose_name="naw kryar",
                               on_delete=models.CASCADE, related_name="sell_compnay")
     discount = models.DecimalField(
         verbose_name="dashkan", max_digits=5, decimal_places=2, blank=True, default=0.0)
-    date = models.DateTimeField(verbose_name="rekwt", auto_now_add=True)
+    date = models.DateTimeField(
+        verbose_name="rekwt", auto_now_add=True, blank=True)
 
     def __str__(self):
         return "wasl " + str(self.id)
@@ -133,14 +204,16 @@ class Sell(models.Model):
     def totall(self):
         total = 0
         if len(self.sell_detail.all()):
-            total = float('{:.2f}'.format(self.sell_detail.annotate(answer=F('price') * F('quantity')).aggregate(total=Sum('answer'))['total']))
+            total = float('{:.2f}'.format(self.sell_detail.annotate(
+                answer=F('price') * F('quantity')).aggregate(total=Sum('answer'))['total']))
         return str(total)
 
     @property
     def totallint(self):
         tot = 0
         if len(self.sell_detail.all()):
-            tot = self.sell_detail.annotate(answer=F('price') * F('quantity')).aggregate(total=Sum('answer'))['total']
+            tot = self.sell_detail.annotate(
+                answer=F('price') * F('quantity')).aggregate(total=Sum('answer'))['total'] - self.discount
         return tot
 
 
@@ -152,7 +225,8 @@ class SellDetail(models.Model):
     quantity = models.IntegerField(verbose_name="dane")
     price = models.DecimalField(
         verbose_name="nrx", max_digits=5, decimal_places=2)
-    date = models.DateTimeField(verbose_name="rekwt", auto_now_add=True)
+    date = models.DateTimeField(
+        verbose_name="rekwt", auto_now_add=True, blank=True)
 
     def total(self):
         return self.price * self.quantity
@@ -166,16 +240,35 @@ class SellDetail(models.Model):
     def __str__(self):
         return "forsh kala " + str(self.id)
 
-
+# // mewady hawt nek order
 class Order(models.Model):
     group = models.ForeignKey("Group", verbose_name="naw group",
                               on_delete=models.CASCADE, related_name="order_group")
     trader = models.ForeignKey("TradeCompany", verbose_name="naw compaya",
-                              on_delete=models.CASCADE, related_name="order_compnay")
-    date = models.DateTimeField(verbose_name="rekwt", auto_now_add=True)
+                               on_delete=models.CASCADE, related_name="order_compnay")
+    code = models.CharField(verbose_name="jamrey wesl", max_length=250, blank=True, default="")
+    discount = models.DecimalField(
+        verbose_name="dashkandn", max_digits=5, decimal_places=2 , blank=True, default="0.0")
+    date = models.DateTimeField(
+        verbose_name="rekwt", auto_now_add=True, blank=True)
 
     def __str__(self):
         return "wasl dawakary" + str(self.id)
+    @property
+    def totall(self):
+        total = 0
+        if len(self.order_detail.all()):
+            total = float('{:.2f}'.format(self.order_detail.annotate(
+                answer=F('price') * F('quantity')).aggregate(total=Sum('answer'))['total']))
+        return str(total)
+    
+    @property
+    def totallint(self):
+        tot = 0
+        if len(self.order_detail.all()):
+            tot = self.order_detail.annotate(
+                answer=F('price') * F('quantity')).aggregate(total=Sum('answer'))['total'] - self.discount
+        return tot
 
 
 class OrderDetail(models.Model):
@@ -183,7 +276,66 @@ class OrderDetail(models.Model):
                               on_delete=models.CASCADE, related_name="order_detail")
     item = models.ForeignKey("Item", verbose_name="naw kala",
                              on_delete=models.CASCADE, related_name="item_order")
-    quantity = models.CharField(verbose_name="dane", max_length=250)
+    quantity = models.IntegerField(verbose_name="dane")
     price = models.DecimalField(
         verbose_name="nrx", max_digits=5, decimal_places=2)
     date = models.DateTimeField(verbose_name="rekwt", auto_now_add=True)
+    
+    @property
+    def total(self):
+        return self.price * self.quantity
+
+
+class Payment(models.Model):
+    group = models.ForeignKey("Group", verbose_name="naw group",
+                              on_delete=models.CASCADE, related_name="payment_group")
+    local = models.ForeignKey("LocalCompany", verbose_name="naw kryar",
+                              on_delete=models.CASCADE, related_name="payment_compnay")
+    bank = models.ForeignKey("Bank", verbose_name="qase",
+                             on_delete=models.CASCADE, related_name="payment_bank")
+    date = models.DateTimeField(
+        verbose_name="rekwt", auto_now_add=True, blank=True)
+    
+
+
+
+class Payloan(models.Model):
+    group = models.ForeignKey("Group", verbose_name="naw group",
+                              on_delete=models.CASCADE, related_name="loan_group")
+    trader = models.ForeignKey("TradeCompany", verbose_name="naw kryar",
+                               on_delete=models.CASCADE, related_name="loan_compnay")
+    bank = models.ForeignKey("Bank", verbose_name="qase",
+                             on_delete=models.CASCADE, related_name="loan_bank")
+    date = models.DateTimeField(
+        verbose_name="rekwt", auto_now_add=True, blank=True)
+
+
+class buy(models.Model):
+    group = models.ForeignKey("Group", verbose_name="naw group",
+                              on_delete=models.CASCADE, related_name="buy_group")
+    bank = models.ForeignKey("Bank", verbose_name="qase",
+                             on_delete=models.CASCADE, related_name="buy_bank")
+    date = models.DateTimeField(
+        verbose_name="rekwt", auto_now_add=True, blank=True)
+
+
+
+class paysalary(models.Model):
+    group = models.ForeignKey("Group", verbose_name="naw group",
+                              on_delete=models.CASCADE, related_name="salary_group")
+    bank = models.ForeignKey("Bank", verbose_name="qase",
+                             on_delete=models.CASCADE, related_name="salary_bank")
+    employee = models.ForeignKey("Epmploye", verbose_name="krekar",
+                                 on_delete=models.CASCADE, related_name="salary_employee")
+    date = models.DateTimeField(
+        verbose_name="rekwt", auto_now_add=True, blank=True)
+
+
+
+class Bank(models.Model):
+    income = models.DecimalField(
+        verbose_name="hawto", max_digits=5, decimal_places=2)
+    loan = models.DecimalField(
+        verbose_name="decho", max_digits=5, decimal_places=2)
+    date = models.DateTimeField(
+        verbose_name="rekwt", auto_now_add=True, blank=True)

@@ -42,6 +42,10 @@ class GroupViewSet(viewsets.ModelViewSet):
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
 
+class GroupXViewSet(viewsets.ModelViewSet):
+    queryset = Group.objects.all()
+    serializer_class = GroupXSerializer
+
 
 class ItemXViewSet(viewsets.ModelViewSet):
     queryset = Item.objects.all()
@@ -71,12 +75,19 @@ class SellXViewSet(viewsets.ModelViewSet):
     queryset = Sell.objects.all()
     serializer_class = SellXSerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['group']
+    filterset_fields = ['group','vendor','date__date']
 
 
 class OrderViewSet(viewsets.ModelViewSet):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['group']
+
+
+class OrderXViewSet(viewsets.ModelViewSet):
+    queryset = Order.objects.all()
+    serializer_class = OrderXSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['group']
 
@@ -89,3 +100,7 @@ class OrderedViewSet(viewsets.ModelViewSet):
 class RegionViewSet(viewsets.ModelViewSet):
     queryset = Region.objects.all()
     serializer_class = RegionSerializer
+
+class VendorViewSet(viewsets.ModelViewSet):
+    queryset = Vendor.objects.all()
+    serializer_class = VendorSerializer

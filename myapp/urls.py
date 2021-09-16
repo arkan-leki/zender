@@ -14,9 +14,12 @@ router.register(r'local', LocalViewSet)
 router.register(r'locals', LocalXViewSet)
 router.register(r'trader', TraderViewSet)
 router.register(r'group', GroupViewSet)
+router.register(r'groups', GroupXViewSet)
 router.register(r'region', RegionViewSet)
 router.register(r'order', OrderViewSet)
+router.register(r'orders', OrderXViewSet)
 router.register(r'ordered', OrderedViewSet)
+router.register(r'vendors', VendorViewSet)
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.

@@ -5,7 +5,9 @@ from myapp.models import *
 # admin.site.register(TradeCompany)
 admin.site.register(Item)
 admin.site.register(Region)
-# admin.site.register(Group)
+admin.site.register(Vendor)
+admin.site.register(Bank)
+admin.site.register(Payment)
 
 class SelldetailAdmin(admin.TabularInline):
     model = SellDetail
