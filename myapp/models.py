@@ -90,6 +90,13 @@ class TradeCompany(models.Model):
         elif paylaon:
             mawe =  paylaon
         return mawe + self.exchange
+    
+    @property
+    def totallLoan(self):
+        totalls = 0
+        for pay in self.loan_compnay.all():
+            totalls = totalls + pay.bank.loan
+        return str(float('{:.2f}'.format(totalls)))
 
 
 class LocalCompany(models.Model):

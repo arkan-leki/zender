@@ -30,6 +30,11 @@ class TraderViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['group']
 
+class TraderXViewSet(viewsets.ModelViewSet):
+    queryset = TradeCompany.objects.all()
+    serializer_class = TraderXSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['group']
 
 class ItemViewSet(viewsets.ModelViewSet):
     queryset = Item.objects.all()

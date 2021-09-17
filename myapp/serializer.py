@@ -16,6 +16,10 @@ class SellSerializer(serializers.ModelSerializer):
         model = Sell
         fields = '__all__'
 
+class TraderXSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TradeCompany
+        fields = ['id', 'name', 'code', 'exchange', 'group','mawe','totallLoan' , 'date']
 
 class TraderSerializer(serializers.ModelSerializer):
     class Meta:
