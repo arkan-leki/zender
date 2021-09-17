@@ -22,7 +22,7 @@ router.register(r'orders', OrderXViewSet)
 router.register(r'ordered', OrderedViewSet)
 router.register(r'vendors', VendorViewSet)
 router.register(r'bank', BankViewSet)
-
+router.register(r'payment', PayViewSet)
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
 urlpatterns=[

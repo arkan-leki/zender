@@ -1,6 +1,7 @@
 from django import forms
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import render
+from django_filters.rest_framework import filters
 from rest_framework import viewsets
 from .models import *
 from .serializer import *
@@ -77,10 +78,10 @@ class SellViewSet(viewsets.ModelViewSet):
 
 
 class SellXViewSet(viewsets.ModelViewSet):
-    queryset = Sell.objects.all()
+    queryset = Sell.objects.all().order_by('-datetime')
     serializer_class = SellXSerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['group','vendor','date__date']
+    filterset_fields = ['group','vendor','date']
 
 
 class OrderViewSet(viewsets.ModelViewSet):
@@ -91,7 +92,7 @@ class OrderViewSet(viewsets.ModelViewSet):
 
 
 class OrderXViewSet(viewsets.ModelViewSet):
-    queryset = Order.objects.all()
+    queryset = Order.objects.all().order_by('-datetime')
     serializer_class = OrderXSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['group']
@@ -111,5 +112,13 @@ class VendorViewSet(viewsets.ModelViewSet):
     serializer_class = VendorSerializer
 
 class BankViewSet(viewsets.ModelViewSet):
+    queryset = Bank.objects.all().order_by('-datetime')
+    serializer_class = BankSerializer
+
+class BankViewSet(viewsets.ModelViewSet):
     queryset = Bank.objects.all()
     serializer_class = BankSerializer
+
+class PayViewSet(viewsets.ModelViewSet):
+    queryset = Payment.objects.all()
+    serializer_class = PaySerializer

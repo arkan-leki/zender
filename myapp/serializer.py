@@ -110,6 +110,13 @@ class BankSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class PaySerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Payment
+        fields = '__all__'
+
+
 class ItemSerializer(serializers.ModelSerializer):
 
     class Meta:
