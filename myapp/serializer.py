@@ -162,7 +162,7 @@ class ItemXSerializer(serializers.ModelSerializer):
     class Meta:
         model = Item
         fields = ['id', 'name', 'group', 'bag', 'quantity',
-                  'barcode', 'trader', 'finalprice', 'mawe', 'wight','price']
+                  'barcode', 'trader', 'finalprice', 'mawe', 'wight','wightAll','price','addprice']
 
 
 class GroupXSerializer(serializers.ModelSerializer):
