@@ -37,12 +37,12 @@ class LocalXSerializer(serializers.ModelSerializer):
     class Meta:
         model = LocalCompany
         fields = ['id', 'name', 'phone', 'code', 'region',
-                  'owner_name', 'totallSell','mawe','totallPay']
+                  'owner_name', 'totallSell', 'mawe', 'totallPay']
 
 
 class SellXDetailSerializer(serializers.ModelSerializer):
     item = serializers.ReadOnlyField(source='item.name')
-    item_wight= serializers.ReadOnlyField(source='item.wight')
+    item_wight = serializers.ReadOnlyField(source='item.wight')
     item_quantity = serializers.ReadOnlyField(source='item.quantity')
     item_wightAll = serializers.ReadOnlyField(source='item.wightAll')
     item_code = serializers.ReadOnlyField(source='item.barcode')
@@ -52,7 +52,7 @@ class SellXDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = SellDetail
         fields = ['id', 'item', 'item_code', 'item_bag',
-                  'quantity', 'price', 'sell', 'date', 'total','item_wight','item_quantity','item_wightAll']
+                  'quantity', 'price', 'sell', 'date', 'total', 'item_wight', 'item_quantity', 'item_wightAll']
 
 
 class LocalSerializer(serializers.ModelSerializer):
@@ -76,7 +76,7 @@ class SellXSerializer(serializers.ModelSerializer):
     class Meta:
         model = Sell
         fields = ['id', 'url', 'local_id', 'local_name', 'local_code', 'sell_detail', 'date', 'totall', 'totallint',
-                  'discount', 'group_name', 'group', 'vendor', 'vendor_name', 'group_phone', 'vendor_phone','local_phone','local_mawe','local_region']
+                  'discount', 'group_name', 'group', 'vendor', 'vendor_name', 'group_phone', 'vendor_phone', 'local_phone', 'local_mawe', 'local_region']
 
 
 class GroupSerializer(serializers.ModelSerializer):
@@ -113,15 +113,17 @@ class OrderSerializer(serializers.ModelSerializer):
         model = Order
         fields = '__all__'
 
+
 class OrderedSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = OrderDetail
         fields = '__all__'
 
+
 class OrderedXSerializer(serializers.ModelSerializer):
     item = serializers.ReadOnlyField(source='item.name')
-    item_wight= serializers.ReadOnlyField(source='item.wight')
+    item_wight = serializers.ReadOnlyField(source='item.wight')
     item_quantity = serializers.ReadOnlyField(source='item.quantity')
     # wightAll
     item_wightAll = serializers.ReadOnlyField(source='item.wightAll')
@@ -132,7 +134,8 @@ class OrderedXSerializer(serializers.ModelSerializer):
     class Meta:
         model = OrderDetail
         fields = ['id', 'item', 'item_code', 'item_bag',
-                  'quantity', 'price', 'sell', 'date', 'total','item_wight','item_quantity','item_wightAll']
+                  'quantity', 'price', 'sell', 'date', 'total', 'item_wight', 'item_quantity', 'item_wightAll']
+
 
 class OrderXSerializer(serializers.ModelSerializer):
     group_name = serializers.ReadOnlyField(source='group.name')
@@ -143,8 +146,7 @@ class OrderXSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = ['id', 'group', 'trader', 'code',
-                  'discount', 'date', 'order_detail','group_name','trader_name','totallint','totall','trader_mawe']
-
+                  'discount', 'date', 'order_detail', 'group_name', 'trader_name', 'totallint', 'totall', 'trader_mawe']
 
 
 class ItemXSerializer(serializers.ModelSerializer):
@@ -154,7 +156,7 @@ class ItemXSerializer(serializers.ModelSerializer):
     class Meta:
         model = Item
         fields = ['id', 'name', 'group', 'bag', 'quantity',
-                  'barcode', 'trader', 'finalprice', 'mawe','wight']
+                  'barcode', 'trader', 'finalprice', 'mawe', 'wight','price']
 
 
 class GroupXSerializer(serializers.ModelSerializer):

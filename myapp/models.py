@@ -33,7 +33,7 @@ class Epmploye(models.Model):
 class Region(models.Model):
     name = models.CharField(verbose_name="nawche", max_length=250)
     code = models.CharField("zip code", max_length=150)
-    date = models.DateTimeField(
+    date = models.DateField(
         verbose_name="rekwt", auto_now_add=True, blank=True)
 
     def __str__(self):
@@ -61,7 +61,7 @@ class Vendor(models.Model):
 class TradeCompany(models.Model):
     name = models.CharField(verbose_name="naw companya", max_length=250)
     code = models.CharField("cody company", max_length=150)
-    date = models.DateTimeField(
+    date = models.DateField(
         verbose_name="rekwt", auto_now_add=True, blank=True)
     group = models.ForeignKey("Group", verbose_name="naw group",
                               on_delete=models.CASCADE, related_name="trader_group")
@@ -76,6 +76,7 @@ class TradeCompany(models.Model):
     @property
     def mawe(self):
         paylaon = 0
+        mawe = 0
         buy = 0
         for pay in self.loan_compnay.all():
             paylaon = paylaon + pay.bank.loan
@@ -101,7 +102,7 @@ class LocalCompany(models.Model):
                              max_length=150, blank=True, null=True)
     owner_name = models.CharField(
         verbose_name="naw xawenar", max_length=250, blank=True, null=True)
-    date = models.DateTimeField(
+    date = models.DateField(
         verbose_name="rekwt", auto_now_add=True, blank=True)
 
     def __str__(self):
@@ -112,6 +113,7 @@ class LocalCompany(models.Model):
 
     @property
     def mawe(self):
+        mawe = 0
         paylaon = 0
         buy = 0
         for pay in self.payment_compnay.all():
@@ -156,7 +158,7 @@ class Item(models.Model):
         verbose_name="reje qazanc", max_digits=5, decimal_places=2)
     trader = models.ForeignKey("TradeCompany", verbose_name="naw companyia",
                                on_delete=models.CASCADE, related_name="item_compnay")
-    date = models.DateTimeField(
+    date = models.DateField(
         verbose_name="rekwt", auto_now_add=True, blank=True)
 
     def __str__(self):
@@ -194,7 +196,7 @@ class Sell(models.Model):
                               on_delete=models.CASCADE, related_name="sell_compnay")
     discount = models.DecimalField(
         verbose_name="dashkan", max_digits=5, decimal_places=2, blank=True, default=0.0)
-    date = models.DateTimeField(
+    date = models.DateField(
         verbose_name="rekwt", auto_now_add=True, blank=True)
 
     def __str__(self):
@@ -225,7 +227,7 @@ class SellDetail(models.Model):
     quantity = models.IntegerField(verbose_name="dane")
     price = models.DecimalField(
         verbose_name="nrx", max_digits=5, decimal_places=2)
-    date = models.DateTimeField(
+    date = models.DateField(
         verbose_name="rekwt", auto_now_add=True, blank=True)
 
     def total(self):
@@ -249,11 +251,12 @@ class Order(models.Model):
     code = models.CharField(verbose_name="jamrey wesl", max_length=250, blank=True, default="")
     discount = models.DecimalField(
         verbose_name="dashkandn", max_digits=5, decimal_places=2 , blank=True, default="0.0")
-    date = models.DateTimeField(
+    date = models.DateField(
         verbose_name="rekwt", auto_now_add=True, blank=True)
 
     def __str__(self):
         return "wasl dawakary" + str(self.id)
+    
     @property
     def totall(self):
         total = 0
@@ -279,7 +282,7 @@ class OrderDetail(models.Model):
     quantity = models.IntegerField(verbose_name="dane")
     price = models.DecimalField(
         verbose_name="nrx", max_digits=5, decimal_places=2)
-    date = models.DateTimeField(verbose_name="rekwt", auto_now_add=True)
+    date = models.DateField(verbose_name="rekwt", auto_now_add=True)
     
     @property
     def total(self):
@@ -293,7 +296,7 @@ class Payment(models.Model):
                               on_delete=models.CASCADE, related_name="payment_compnay")
     bank = models.ForeignKey("Bank", verbose_name="qase",
                              on_delete=models.CASCADE, related_name="payment_bank")
-    date = models.DateTimeField(
+    date = models.DateField(
         verbose_name="rekwt", auto_now_add=True, blank=True)
     
 
@@ -306,7 +309,7 @@ class Payloan(models.Model):
                                on_delete=models.CASCADE, related_name="loan_compnay")
     bank = models.ForeignKey("Bank", verbose_name="qase",
                              on_delete=models.CASCADE, related_name="loan_bank")
-    date = models.DateTimeField(
+    date = models.DateField(
         verbose_name="rekwt", auto_now_add=True, blank=True)
 
 
@@ -315,7 +318,7 @@ class buy(models.Model):
                               on_delete=models.CASCADE, related_name="buy_group")
     bank = models.ForeignKey("Bank", verbose_name="qase",
                              on_delete=models.CASCADE, related_name="buy_bank")
-    date = models.DateTimeField(
+    date = models.DateField(
         verbose_name="rekwt", auto_now_add=True, blank=True)
 
 
@@ -327,7 +330,7 @@ class paysalary(models.Model):
                              on_delete=models.CASCADE, related_name="salary_bank")
     employee = models.ForeignKey("Epmploye", verbose_name="krekar",
                                  on_delete=models.CASCADE, related_name="salary_employee")
-    date = models.DateTimeField(
+    date = models.DateField(
         verbose_name="rekwt", auto_now_add=True, blank=True)
 
 
@@ -337,5 +340,5 @@ class Bank(models.Model):
         verbose_name="hawto", max_digits=5, decimal_places=2)
     loan = models.DecimalField(
         verbose_name="decho", max_digits=5, decimal_places=2)
-    date = models.DateTimeField(
+    date = models.DateField(
         verbose_name="rekwt", auto_now_add=True, blank=True)
