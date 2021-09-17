@@ -37,7 +37,7 @@ class LocalXSerializer(serializers.ModelSerializer):
     class Meta:
         model = LocalCompany
         fields = ['id', 'name', 'phone', 'code', 'region',
-                  'owner_name', 'totallSell', 'mawe', 'totallPay']
+                  'owner_name', 'totallSell', 'mawe', 'totallPay','exchange']
 
 
 class SellXDetailSerializer(serializers.ModelSerializer):
