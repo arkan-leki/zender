@@ -89,7 +89,7 @@ class TradeCompany(models.Model):
             mawe =  buy
         elif paylaon:
             mawe =  paylaon
-        return mawe
+        return mawe + self.exchange
 
 
 class LocalCompany(models.Model):
@@ -129,7 +129,7 @@ class LocalCompany(models.Model):
             mawe =  buy
         elif paylaon:
             mawe =  paylaon
-        return mawe
+        return mawe + self.exchange
 
     @property
     def totallPay(self):
