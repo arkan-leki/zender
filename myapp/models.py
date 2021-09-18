@@ -95,6 +95,13 @@ class TradeCompany(models.Model):
         for pay in self.loan_compnay.all():
             totalls = totalls + pay.bank.loan
         return str(float('{:.2f}'.format(totalls)))
+    
+    @property
+    def totallBuy(self):
+        totalls = 0
+        for totall in self.order_compnay.all():
+            totalls = totalls + totall.totallint
+        return str(float('{:.2f}'.format(totalls)))
 
 
 class LocalCompany(models.Model):
@@ -132,8 +139,8 @@ class LocalCompany(models.Model):
         if(self.sell_compnay.all()):
             for laon in self.sell_compnay.all():
                 buy = buy + laon.totallint
-        
-        return ( buy - paylaon) + self.exchange - decimal.Decimal(self.totallSellback)
+
+        return (buy - paylaon) + self.exchange - decimal.Decimal(self.totallSellback)
 
     @property
     def totallPay(self):
@@ -148,7 +155,7 @@ class LocalCompany(models.Model):
         for totall in self.sell_compnay.all():
             totalls = totalls + totall.totallint
         return str(float('{:.2f}'.format(totalls)))
-    
+
     @property
     def totallSellback(self):
         totalls = 0
@@ -192,16 +199,17 @@ class Item(models.Model):
         frosh = 0
         gerawe = 0
         if(self.item_order.aggregate(Sum('quantity'))['quantity__sum']):
-             krin = self.item_order.aggregate(Sum('quantity'))['quantity__sum']
-       
-        frosh = 0 
+            krin = self.item_order.aggregate(Sum('quantity'))['quantity__sum']
+
+        frosh = 0
         if(self.item_sell.aggregate(Sum('quantity'))['quantity__sum']):
             frosh = self.item_sell.aggregate(Sum('quantity'))['quantity__sum']
-       
+
         if self.ReSell_item.aggregate(Sum('quantity'))['quantity__sum']:
-            gerawe = self.ReSell_item.aggregate(Sum('quantity'))['quantity__sum']
-            
-        return ( krin - frosh) + (self.stock) + (gerawe)
+            gerawe = self.ReSell_item.aggregate(
+                Sum('quantity'))['quantity__sum']
+
+        return (krin - frosh) + (self.stock) + (gerawe)
 
     @property
     def finalprice(self):
@@ -240,7 +248,7 @@ class Sell(models.Model):
             tot = self.ReSell_detail.annotate(
                 answer=F('price') * F('quantity')).aggregate(total=Sum('answer'))['total']
         return tot
-    
+
     @property
     def totallint(self):
         tot = 0
@@ -276,14 +284,17 @@ class SellDetail(models.Model):
         return "forsh kala " + str(self.id)
 
 # // mewady hawt nek order
+
+
 class Order(models.Model):
     group = models.ForeignKey("Group", verbose_name="naw group",
                               on_delete=models.CASCADE, related_name="order_group")
     trader = models.ForeignKey("TradeCompany", verbose_name="naw compaya",
                                on_delete=models.CASCADE, related_name="order_compnay")
-    code = models.CharField(verbose_name="jamrey wesl", max_length=250, blank=True, default="")
+    code = models.CharField(verbose_name="jamrey wesl",
+                            max_length=250, blank=True, default="")
     discount = models.DecimalField(
-        verbose_name="dashkandn", max_digits=22, decimal_places=2 , blank=True, default="0.0")
+        verbose_name="dashkandn", max_digits=22, decimal_places=2, blank=True, default="0.0")
     date = models.DateField(
         verbose_name="barwar", auto_now_add=True, blank=True)
     datetime = models.DateTimeField(
@@ -291,7 +302,7 @@ class Order(models.Model):
 
     def __str__(self):
         return "wasl dawakary" + str(self.id)
-    
+
     @property
     def totall(self):
         total = 0
@@ -299,7 +310,7 @@ class Order(models.Model):
             total = float('{:.2f}'.format(self.order_detail.annotate(
                 answer=F('price') * F('quantity')).aggregate(total=Sum('answer'))['total']))
         return str(total)
-    
+
     @property
     def totallint(self):
         tot = 0
@@ -320,7 +331,7 @@ class OrderDetail(models.Model):
     date = models.DateField(verbose_name="barwar", auto_now_add=True)
     datetime = models.DateTimeField(
         verbose_name="rekwt", auto_now_add=True, blank=True)
-    
+
     @property
     def total(self):
         return self.price * self.quantity
@@ -337,8 +348,6 @@ class Payment(models.Model):
         verbose_name="barwar", auto_now_add=True, blank=True)
     datetime = models.DateTimeField(
         verbose_name="rekwt", auto_now_add=True, blank=True)
-    
-
 
 
 class Payloan(models.Model):
@@ -355,7 +364,7 @@ class Payloan(models.Model):
 
 
 class buy(models.Model):
-    name = models.CharField(verbose_name="ho", max_length=250,blank=True)
+    name = models.CharField(verbose_name="ho", max_length=250, blank=True)
     group = models.ForeignKey("Group", verbose_name="naw group",
                               on_delete=models.CASCADE, related_name="buy_group")
     bank = models.ForeignKey("Bank", verbose_name="qase",
@@ -364,7 +373,6 @@ class buy(models.Model):
         verbose_name="barwar", auto_now_add=True, blank=True)
     datetime = models.DateTimeField(
         verbose_name="rekwt", auto_now_add=True, blank=True)
-
 
 
 class paysalary(models.Model):
@@ -380,8 +388,9 @@ class paysalary(models.Model):
         verbose_name="rekwt", auto_now_add=True, blank=True)
 
 
-
 class Bank(models.Model):
+    group = models.ForeignKey("Group", verbose_name="naw group",
+                              on_delete=models.CASCADE, related_name="bank_group")
     income = models.DecimalField(
         verbose_name="hawto", max_digits=22, decimal_places=2)
     loan = models.DecimalField(
@@ -394,7 +403,7 @@ class Bank(models.Model):
 
 class ReSell(models.Model):
     sell = models.ForeignKey("Sell", verbose_name="wasl",
-                              on_delete=models.CASCADE, related_name="ReSell_detail")
+                             on_delete=models.CASCADE, related_name="ReSell_detail")
     item = models.ForeignKey("Item", verbose_name="naw kala",
                              on_delete=models.CASCADE, related_name="ReSell_item")
     quantity = models.IntegerField(verbose_name="dane")
@@ -403,13 +412,13 @@ class ReSell(models.Model):
     date = models.DateField(verbose_name="barwar", auto_now_add=True)
     datetime = models.DateTimeField(
         verbose_name="rekwt", auto_now_add=True, blank=True)
-    
+
     @property
     def total(self):
         return self.price * self.quantity
 
     def __str__(self):
-        return 
+        return
 
     def __unicode__(self):
-        return 
+        return

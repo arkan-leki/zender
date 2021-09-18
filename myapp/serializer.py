@@ -19,7 +19,7 @@ class SellSerializer(serializers.ModelSerializer):
 class TraderXSerializer(serializers.ModelSerializer):
     class Meta:
         model = TradeCompany
-        fields = ['id', 'name', 'code', 'exchange', 'group','mawe','totallLoan' , 'date']
+        fields = ['id', 'name', 'code', 'exchange', 'group','mawe','totallLoan' , 'date' , 'totallBuy']
 
 class TraderSerializer(serializers.ModelSerializer):
     class Meta:
@@ -54,7 +54,7 @@ class SellXDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SellDetail
-        fields = ['id', 'item', 'item_code', 'item_bag',
+        fields = ['id', 'item_id', 'item', 'item_code', 'item_bag',
                   'quantity', 'price', 'sell', 'date', 'total', 'item_wight', 'item_quantity', 'item_wightAll']
 
 
@@ -114,10 +114,11 @@ class VendorSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class BankSerializer(serializers.ModelSerializer):
+    group_name = serializers.ReadOnlyField(source='group.name')
 
     class Meta:
         model = Bank
-        fields = '__all__'
+        fields = ['id','income','loan','group','group_name']
 
 
 class PaySerializer(serializers.ModelSerializer):
@@ -195,7 +196,7 @@ class ItemXSerializer(serializers.ModelSerializer):
 class GroupXSerializer(serializers.ModelSerializer):
     sell_group = SellXSerializer(read_only=True, many=True)
     item_group = ItemXSerializer(read_only=True, many=True)
-
+    
     class Meta:
         model = Group
         fields = ['id', 'url', 'name', 'phone', 'sell_group', 'item_group']
