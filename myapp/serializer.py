@@ -35,13 +35,12 @@ class SellDetailSerializer(serializers.ModelSerializer):
 
 class LocalXSerializer(serializers.ModelSerializer):
     region = serializers.ReadOnlyField(source='region.name')
-    # sell_compnay = SellXSerializer(read_only=True, many=True)
     totallSell = serializers.ReadOnlyField()
 
     class Meta:
         model = LocalCompany
         fields = ['id', 'name', 'phone', 'code', 'region',
-                  'owner_name', 'totallSell', 'mawe', 'totallPay','exchange']
+                  'owner_name', 'totallSell', 'mawe', 'totallPay','exchange','totallSellback']
 
 
 class SellXDetailSerializer(serializers.ModelSerializer):
@@ -65,6 +64,12 @@ class LocalSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class ReSellSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ReSell
+        fields = '__all__'
+
+
 class SellXSerializer(serializers.ModelSerializer):
     local_name = serializers.ReadOnlyField(source='local.name')
     local_code = serializers.ReadOnlyField(source='local.code')
@@ -79,7 +84,7 @@ class SellXSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Sell
-        fields = ['id', 'url', 'local_id', 'local_name', 'local_code', 'sell_detail', 'date', 'totall', 'totallint',
+        fields = ['id', 'url', 'local_id', 'local_name', 'local_code', 'sell_detail', 'date', 'datetime', 'totall', 'totallint', 'totalback',
                   'discount', 'group_name', 'group', 'vendor', 'vendor_name', 'group_phone', 'vendor_phone', 'local_phone', 'local_mawe', 'local_region']
 
 
@@ -114,6 +119,12 @@ class PaySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Payment
+        fields = '__all__'
+
+class PayLoanSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Payloan
         fields = '__all__'
 
 

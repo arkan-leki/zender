@@ -122,3 +122,11 @@ class BankViewSet(viewsets.ModelViewSet):
 class PayViewSet(viewsets.ModelViewSet):
     queryset = Payment.objects.all()
     serializer_class = PaySerializer
+
+class PayLoanViewSet(viewsets.ModelViewSet):
+    queryset = Payloan.objects.all()
+    serializer_class = PayLoanSerializer
+
+class ReSellViewSet(viewsets.ModelViewSet):
+    queryset = ReSell.objects.all()
+    serializer_class = ReSellSerializer

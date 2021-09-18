@@ -1,3 +1,4 @@
+import decimal
 from django.db import models
 from django.db.models.aggregates import Sum
 from django.db.models.expressions import F
@@ -65,32 +66,29 @@ class TradeCompany(models.Model):
         verbose_name="barwar", auto_now_add=True, blank=True)
     group = models.ForeignKey("Group", verbose_name="naw group",
                               on_delete=models.CASCADE, related_name="trader_group")
-    exchange =  models.DecimalField(
-        verbose_name="qarz yakam jar", max_digits=5, decimal_places=2,default="0.0")
+    exchange = models.DecimalField(
+        verbose_name="qarz yakam jar", max_digits=22, decimal_places=2, default="0.0")
 
     def __str__(self):
         return self.name
 
     def __unicode__(self):
         return
-    
+
     @property
     def mawe(self):
         paylaon = 0
-        mawe = 0
         buy = 0
-        for pay in self.loan_compnay.all():
-            paylaon = paylaon + pay.bank.loan
-        for laon in self.order_compnay.all():
-            buy = buy + laon.totallint
-        if paylaon and buy:
-            mawe =  buy - paylaon
-        elif buy:
-            mawe =  buy
-        elif paylaon:
-            mawe =  paylaon
-        return mawe + self.exchange
-    
+        if(self.loan_compnay.all()):
+            for pay in self.loan_compnay.all():
+                paylaon = paylaon + pay.bank.loan
+
+        if(self.order_compnay.all()):
+            for laon in self.order_compnay.all():
+                buy = buy + laon.totallint
+
+        return (buy - paylaon) + self.exchange
+
     @property
     def totallLoan(self):
         totalls = 0
@@ -112,8 +110,10 @@ class LocalCompany(models.Model):
         verbose_name="naw xawenar", max_length=250, blank=True, null=True)
     date = models.DateField(
         verbose_name="barwar", auto_now_add=True, blank=True)
-    exchange =  models.DecimalField(
-        verbose_name="qarz yakam jar", max_digits=5, decimal_places=2,default="0.0")
+    exchange = models.DecimalField(
+        verbose_name="qarz yakam jar", max_digits=22, decimal_places=2, default="0.0")
+    location = models.DecimalField(
+        max_digits=22, decimal_places=16, blank=True, null=True)
 
     def __str__(self):
         return self.name
@@ -123,20 +123,17 @@ class LocalCompany(models.Model):
 
     @property
     def mawe(self):
-        mawe = 0
         paylaon = 0
         buy = 0
-        for pay in self.payment_compnay.all():
-            paylaon = paylaon + pay.bank.income
-        for laon in self.sell_compnay.all():
-            buy = buy + laon.totallint
-        if paylaon and buy:
-            mawe =  buy - paylaon
-        elif buy:
-            mawe =  buy
-        elif paylaon:
-            mawe =  paylaon
-        return mawe + self.exchange
+        if(self.payment_compnay.all()):
+            for pay in self.payment_compnay.all():
+                paylaon = paylaon + pay.bank.income
+
+        if(self.sell_compnay.all()):
+            for laon in self.sell_compnay.all():
+                buy = buy + laon.totallint
+        
+        return ( buy - paylaon) + self.exchange - decimal.Decimal(self.totallSellback)
 
     @property
     def totallPay(self):
@@ -144,13 +141,20 @@ class LocalCompany(models.Model):
         for pay in self.payment_compnay.all():
             totalls = totalls + pay.bank.income
         return str(float('{:.2f}'.format(totalls)))
-    
+
     @property
     def totallSell(self):
         totalls = 0
         for totall in self.sell_compnay.all():
             totalls = totalls + totall.totallint
         return str(float('{:.2f}'.format(totalls)))
+    
+    @property
+    def totallSellback(self):
+        totalls = 0
+        for totall in self.sell_compnay.all():
+            totalls = totalls + totall.totalback
+        return float('{:.2f}'.format(totalls))
 
 
 class Item(models.Model):
@@ -159,16 +163,16 @@ class Item(models.Model):
     name = models.CharField(verbose_name="nawy mawad", max_length=250)
     bag = models.CharField(verbose_name="jor bar", max_length=250)
     wight = models.DecimalField(
-        verbose_name="wazn kala", max_digits=5, decimal_places=2,default="0.0")
+        verbose_name="wazn kala", max_digits=22, decimal_places=2, default="0.0")
     quantity = models.IntegerField(verbose_name="dane")
     barcode = models.CharField("cody mewad", max_length=150)
     price = models.DecimalField(
-        verbose_name="nrx kiren", max_digits=5, decimal_places=2)
+        verbose_name="nrx kiren", max_digits=22, decimal_places=2)
     addprice = models.DecimalField(
-        verbose_name="reje qazanc", max_digits=5, decimal_places=2)
+        verbose_name="reje qazanc", max_digits=22, decimal_places=2)
     trader = models.ForeignKey("TradeCompany", verbose_name="naw companyia",
                                on_delete=models.CASCADE, related_name="item_compnay")
-    stock = models.IntegerField(verbose_name="stock",default=0)
+    stock = models.IntegerField(verbose_name="stock", default=0)
     date = models.DateField(
         verbose_name="barwar", auto_now_add=True, blank=True)
 
@@ -184,16 +188,20 @@ class Item(models.Model):
 
     @property
     def mawe(self):
-        mawe = 0
-        krin = self.item_order.aggregate(Sum('quantity'))['quantity__sum']
-        frosh = self.item_sell.aggregate(Sum('quantity'))['quantity__sum']
-        if krin and frosh:
-            mawe = krin - frosh
-        elif frosh:
-            mawe = 0 - frosh
-        elif krin:
-            mawe = krin - 0
-        return mawe + self.stock
+        krin = 0
+        frosh = 0
+        gerawe = 0
+        if(self.item_order.aggregate(Sum('quantity'))['quantity__sum']):
+             krin = self.item_order.aggregate(Sum('quantity'))['quantity__sum']
+       
+        frosh = 0 
+        if(self.item_sell.aggregate(Sum('quantity'))['quantity__sum']):
+            frosh = self.item_sell.aggregate(Sum('quantity'))['quantity__sum']
+       
+        if self.ReSell_item.aggregate(Sum('quantity'))['quantity__sum']:
+            gerawe = self.ReSell_item.aggregate(Sum('quantity'))['quantity__sum']
+            
+        return ( krin - frosh) + (self.stock) + (gerawe)
 
     @property
     def finalprice(self):
@@ -208,7 +216,7 @@ class Sell(models.Model):
     local = models.ForeignKey("LocalCompany", verbose_name="naw kryar",
                               on_delete=models.CASCADE, related_name="sell_compnay")
     discount = models.DecimalField(
-        verbose_name="dashkan", max_digits=5, decimal_places=2, blank=True, default=0.0)
+        verbose_name="dashkan", max_digits=22, decimal_places=2, blank=True, default=0.0)
     date = models.DateField(
         verbose_name="barwar", auto_now_add=True, blank=True)
     datetime = models.DateTimeField(
@@ -226,6 +234,14 @@ class Sell(models.Model):
         return str(total)
 
     @property
+    def totalback(self):
+        tot = 0
+        if len(self.ReSell_detail.all()):
+            tot = self.ReSell_detail.annotate(
+                answer=F('price') * F('quantity')).aggregate(total=Sum('answer'))['total']
+        return tot
+    
+    @property
     def totallint(self):
         tot = 0
         if len(self.sell_detail.all()):
@@ -241,7 +257,7 @@ class SellDetail(models.Model):
                              on_delete=models.CASCADE, related_name="item_sell")
     quantity = models.IntegerField(verbose_name="dane")
     price = models.DecimalField(
-        verbose_name="nrx", max_digits=5, decimal_places=2)
+        verbose_name="nrx", max_digits=22, decimal_places=2)
     date = models.DateField(
         verbose_name="barwar", auto_now_add=True, blank=True)
     datetime = models.DateTimeField(
@@ -267,7 +283,7 @@ class Order(models.Model):
                                on_delete=models.CASCADE, related_name="order_compnay")
     code = models.CharField(verbose_name="jamrey wesl", max_length=250, blank=True, default="")
     discount = models.DecimalField(
-        verbose_name="dashkandn", max_digits=5, decimal_places=2 , blank=True, default="0.0")
+        verbose_name="dashkandn", max_digits=22, decimal_places=2 , blank=True, default="0.0")
     date = models.DateField(
         verbose_name="barwar", auto_now_add=True, blank=True)
     datetime = models.DateTimeField(
@@ -300,7 +316,7 @@ class OrderDetail(models.Model):
                              on_delete=models.CASCADE, related_name="item_order")
     quantity = models.IntegerField(verbose_name="dane")
     price = models.DecimalField(
-        verbose_name="nrx", max_digits=5, decimal_places=2)
+        verbose_name="nrx", max_digits=22, decimal_places=2)
     date = models.DateField(verbose_name="barwar", auto_now_add=True)
     datetime = models.DateTimeField(
         verbose_name="rekwt", auto_now_add=True, blank=True)
@@ -366,10 +382,33 @@ class paysalary(models.Model):
 
 class Bank(models.Model):
     income = models.DecimalField(
-        verbose_name="hawto", max_digits=5, decimal_places=2)
+        verbose_name="hawto", max_digits=22, decimal_places=2)
     loan = models.DecimalField(
-        verbose_name="decho", max_digits=5, decimal_places=2)
+        verbose_name="decho", max_digits=22, decimal_places=2)
     date = models.DateField(
         verbose_name="barwar", auto_now_add=True, blank=True)
     datetime = models.DateTimeField(
         verbose_name="rekwt", auto_now_add=True, blank=True)
+
+
+class ReSell(models.Model):
+    sell = models.ForeignKey("Sell", verbose_name="wasl",
+                              on_delete=models.CASCADE, related_name="ReSell_detail")
+    item = models.ForeignKey("Item", verbose_name="naw kala",
+                             on_delete=models.CASCADE, related_name="ReSell_item")
+    quantity = models.IntegerField(verbose_name="dane")
+    price = models.DecimalField(
+        verbose_name="nrx", max_digits=22, decimal_places=2)
+    date = models.DateField(verbose_name="barwar", auto_now_add=True)
+    datetime = models.DateTimeField(
+        verbose_name="rekwt", auto_now_add=True, blank=True)
+    
+    @property
+    def total(self):
+        return self.price * self.quantity
+
+    def __str__(self):
+        return 
+
+    def __unicode__(self):
+        return 
