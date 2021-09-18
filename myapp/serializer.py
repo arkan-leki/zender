@@ -101,6 +101,11 @@ class RegionSerializer(serializers.ModelSerializer):
         model = Region
         fields = '__all__'
 
+class BuySerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = buy
+        fields = '__all__'
 
 class VendorSerializer(serializers.ModelSerializer):
 

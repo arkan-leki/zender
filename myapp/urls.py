@@ -25,6 +25,7 @@ router.register(r'bank', BankViewSet)
 router.register(r'payment', PayViewSet)
 router.register(r'payloan', PayLoanViewSet)
 router.register(r'resell', ReSellViewSet)
+router.register(r'buy', BuyViewSet)
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.

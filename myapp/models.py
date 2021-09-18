@@ -355,6 +355,7 @@ class Payloan(models.Model):
 
 
 class buy(models.Model):
+    name = models.CharField(verbose_name="ho", max_length=250,blank=True)
     group = models.ForeignKey("Group", verbose_name="naw group",
                               on_delete=models.CASCADE, related_name="buy_group")
     bank = models.ForeignKey("Bank", verbose_name="qase",
