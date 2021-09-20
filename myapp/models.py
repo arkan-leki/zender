@@ -390,7 +390,7 @@ class Item(models.Model):
     def price(self):
         try:
             queryset = self.item_price.filter(status=True).last
-            return queryset.price
+            return 0
         except ObjectDoesNotExist:
             return 0.0
 
