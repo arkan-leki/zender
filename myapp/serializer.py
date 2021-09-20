@@ -127,7 +127,7 @@ class GroupSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Group
-        fields = ['name', 'phone', 'image', 'add_date', 'status', 'items', 'vendors'
+        fields = ['name', 'phone', 'image', 'add_date', 'status', 'items', 'vendors',
                   'totallSell', 'totallOrder', 'payments', 'loans', 'buys', 'banks']
 
 

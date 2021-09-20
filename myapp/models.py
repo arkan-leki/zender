@@ -364,11 +364,11 @@ class Item(models.Model):
         verbose_name="نرخی کڕین", max_digits=22, decimal_places=2)
     addprice = models.DecimalField(
         verbose_name="رءژەی قازانژ", max_digits=22, decimal_places=2)
-    quantity = models.IntegerField(verbose_name="dane")
+    quantity = models.IntegerField(verbose_name=" دانە")
     barcode = models.CharField("کۆدی مەواد", max_length=150)
     trader = models.ForeignKey("TradeCompany", verbose_name="کۆمپانیا",
                                on_delete=models.CASCADE, related_name="item_compnay")
-    stock = models.IntegerField(verbose_name="stock", default=0)
+    stock = models.IntegerField(verbose_name=" مانەوەی یەکەم جار", default=0)
     date = models.DateField(
         verbose_name="بەروار", auto_now_add=True, blank=True)
     image = ResizedImageField(size=[400, 400], quality=50,
@@ -550,7 +550,7 @@ class OrderDetail(models.Model):
                               on_delete=models.CASCADE, related_name="order_detail")
     item = models.ForeignKey("Item", verbose_name="naw kala",
                              on_delete=models.CASCADE, related_name="item_order")
-    quantity = models.IntegerField(verbose_name="dane")
+    quantity = models.IntegerField(verbose_name=" دانە")
     price = models.DecimalField(
         verbose_name="nrx", max_digits=22, decimal_places=2)
     date = models.DateField(verbose_name="بەروار", auto_now_add=True)
