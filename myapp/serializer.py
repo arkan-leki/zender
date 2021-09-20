@@ -85,6 +85,12 @@ class ReSellSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class PriceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Pricing
+        fields = '__all__'
+
+
 class SellXSerializer(serializers.ModelSerializer):
     local_id = serializers.ReadOnlyField(source='local.id')
     local_name = serializers.ReadOnlyField(source='local.name')

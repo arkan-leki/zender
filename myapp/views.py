@@ -136,3 +136,7 @@ class PayLoanViewSet(viewsets.ModelViewSet):
 class ReSellViewSet(viewsets.ModelViewSet):
     queryset = ReSell.objects.all()
     serializer_class = ReSellSerializer
+
+class PriceViewSet(viewsets.ModelViewSet):
+    queryset = Pricing.objects.all()
+    serializer_class = PriceSerializer
