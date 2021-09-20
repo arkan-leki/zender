@@ -387,20 +387,21 @@ class Item(models.Model):
     def wightAll(self):
         return self.wight * self.quantity
     
+    @property
     def price(self):
         try:
             queryset = self.item_price.filter(status=True).last
             return queryset.price
         except ObjectDoesNotExist:
             return self.item_price.filter(status=True).exists()
-    
+    @property
     def finalprice(self):
         try:
             queryset = self.item_price.filter(status=True).last
             return queryset.finalprice
         except ObjectDoesNotExist:
             return self.item_price.filter(status=True).exists()
-    
+    @property
     def addprice(self):
         try:
             queryset = self.item_price.filter(status=True).last
