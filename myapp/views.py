@@ -140,3 +140,11 @@ class ReSellViewSet(viewsets.ModelViewSet):
 class PriceViewSet(viewsets.ModelViewSet):
     queryset = Pricing.objects.all()
     serializer_class = PriceSerializer
+
+class EmployeViewSet(viewsets.ModelViewSet):
+    queryset = Epmploye.objects.all()
+    serializer_class = PriceSerializer
+
+class PaySalaryViewSet(viewsets.ModelViewSet):
+    queryset = Epmploye.objects.all()
+    serializer_class = PaySalarySerializer

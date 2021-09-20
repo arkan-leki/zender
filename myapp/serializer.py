@@ -8,7 +8,13 @@ from django.contrib.auth.models import User
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['url', 'username', 'email', 'is_staff']
+        fields = ['id', 'username', 'email', 'is_staff']
+
+
+class AccountSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Account
+        fields = '__all__'
 
 
 class SellSerializer(serializers.ModelSerializer):
@@ -17,11 +23,10 @@ class SellSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-
 class TraderXSerializer(serializers.ModelSerializer):
     class Meta:
         model = TradeCompany
-        fields = ['id', 'name', 'code', 'exchange', 'group',
+        fields = ['id', 'name', 'code', 'exchange', 'group', 'image', 'add_date', 'status',
                   'mawe', 'totallLoan', 'date', 'totallBuy']
 
 
@@ -52,11 +57,13 @@ class LocalXSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = LocalCompany
-        fields = ['id', 'name', 'phone', 'code', 'region',
-                  'owner_name', 'totallSell', 'mawe', 'totallPay', 'exchange', 'totallSellback', 'attempts', 'payment_company']
+        fields = ['id', 'name', 'phone', 'code', 'region', 'location', 'image', 'add_date', 'status', 'zip_code', 'state', 'country'
+                  'owner_name', 'totallSell', 'mawe', 'totallPay', 'exchange', 'totallSellback', 'attempts', 'payment_company', 'date']
+
     def get_attempts(self, obj):
         quiztakers = Sell.objects.filter(local=obj)
         return SellSerializer(quiztakers, many=True).data
+
 
 class SellXDetailSerializer(serializers.ModelSerializer):
     item = serializers.ReadOnlyField(source='item.name')
@@ -69,7 +76,7 @@ class SellXDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SellDetail
-        fields = ['id', 'item_id', 'item', 'item_code', 'item_bag',
+        fields = ['id', 'item_id', 'item', 'item_code', 'item_bag', 'datetime', 'mawe', 'finalprice' , 'total'
                   'quantity', 'price', 'sell', 'date', 'total', 'item_wight', 'item_quantity', 'item_wightAll']
 
 
@@ -91,6 +98,12 @@ class PriceSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class EmployeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Epmploye
+        fields = '__all__'
+
+
 class SellXSerializer(serializers.ModelSerializer):
     local_id = serializers.ReadOnlyField(source='local.id')
     local_name = serializers.ReadOnlyField(source='local.name')
@@ -109,11 +122,13 @@ class SellXSerializer(serializers.ModelSerializer):
         fields = ['id', 'url', 'local_id', 'local_name', 'local_code', 'sell_detail', 'date', 'datetime', 'totall', 'totallint', 'totalback',
                   'discount', 'group_name', 'group', 'vendor', 'vendor_name', 'group_phone', 'vendor_phone', 'local_phone', 'local_mawe', 'local_region']
 
+
 class GroupSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Group
-        fields = '__all__'
+        fields = ['name', 'phone', 'image', 'add_date', 'status', 'items', 'vendors'
+                  'totallSell', 'totallOrder', 'payments', 'loans', 'buys', 'banks']
 
 
 class RegionSerializer(serializers.ModelSerializer):
@@ -129,6 +144,12 @@ class BuySerializer(serializers.ModelSerializer):
         model = buy
         fields = '__all__'
 
+class PaySalarySerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Paysalary
+        fields = '__all__'
+
 
 class VendorSerializer(serializers.ModelSerializer):
 
@@ -142,7 +163,7 @@ class BankSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Bank
-        fields = ['id', 'income', 'loan', 'group', 'group_name']
+        fields = ['id', 'income', 'loan', 'group', 'group_name','datetime', 'date']
 
 
 class PayLoanSerializer(serializers.ModelSerializer):
@@ -150,6 +171,7 @@ class PayLoanSerializer(serializers.ModelSerializer):
     class Meta:
         model = Payloan
         fields = '__all__'
+
 
 class CatSerializer(serializers.ModelSerializer):
 
@@ -183,7 +205,6 @@ class OrderedXSerializer(serializers.ModelSerializer):
     item = serializers.ReadOnlyField(source='item.name')
     item_wight = serializers.ReadOnlyField(source='item.wight')
     item_quantity = serializers.ReadOnlyField(source='item.quantity')
-    # wightAll
     item_wightAll = serializers.ReadOnlyField(source='item.wightAll')
     item_code = serializers.ReadOnlyField(source='item.barcode')
     item_bag = serializers.ReadOnlyField(source='item.bag')
@@ -191,7 +212,7 @@ class OrderedXSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = OrderDetail
-        fields = ['id', 'item', 'item_code', 'item_bag',
+        fields = ['id', 'item', 'item_code', 'item_bag', 'datetime',
                   'quantity', 'price', 'sell', 'date', 'total', 'item_wight', 'item_quantity', 'item_wightAll']
 
 
@@ -204,7 +225,7 @@ class OrderXSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = ['id', 'group', 'trader', 'code',
-                  'discount', 'date', 'order_detail', 'group_name', 'trader_name', 'totallint', 'totall', 'trader_mawe']
+                  'discount', 'date', 'order_detail', 'group_name', 'trader_name', 'totallint', 'totall', 'trader_mawe', 'datetime']
 
 
 class ItemXSerializer(serializers.ModelSerializer):
@@ -213,7 +234,7 @@ class ItemXSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Item
-        fields = ['id', 'name', 'group', 'bag', 'quantity',
+        fields = ['id', 'name', 'group', 'bag', 'quantity', 'category', 'image', 'add_date', 'deleted', 'popularity'
                   'barcode', 'trader', 'finalprice', 'mawe', 'wight', 'wightAll', 'price', 'addprice']
 
 

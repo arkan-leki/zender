@@ -121,22 +121,22 @@ class Group(models.Model):
         return str(float('{:.2f}'.format(totalls)))
 
     @property
-    def items(self):
+    def payments(self):
         items = self.payment_group.count
         return items
 
     @property
-    def items(self):
+    def loans(self):
         items = self.loan_group.count
         return items
 
     @property
-    def items(self):
+    def buys(self):
         items = self.buy_group.count
         return items
 
     @property
-    def items(self):
+    def banks(self):
         items = self.bank_group.count
         return items
 
@@ -287,8 +287,6 @@ class LocalCompany(models.Model):
     zip_code = models.CharField(max_length=20, blank=True, null=True)
     state = models.CharField(max_length=100, blank=True, null=True)
     country = models.CharField(max_length=100, blank=True, null=True)
-    image = ResizedImageField(size=[300, 300], quality=50,
-                              upload_to='images/', blank=True, null=True, verbose_name="وێنه‌")
 
     def __str__(self):
         return self.name
@@ -430,10 +428,6 @@ class Pricing(models.Model):
     def __str__(self):
         return self.title
 
-    @property
-    def finalprice(self):
-        return str(float('{:.2f}'.format(self.price + (self.price * self.addprice))))
-
     class Meta:
         verbose_name_plural = "نرخەکان"
 
@@ -499,7 +493,7 @@ class SellDetail(models.Model):
     def total(self):
         return self.price * self.quantity
 
-    def addprice(self):
+    def finalprice(self):
         return self.item.finalprice
 
     def mawe(self):
@@ -615,7 +609,7 @@ class buy(models.Model):
         verbose_name="رێکەوت", auto_now_add=True, blank=True)
 
 
-class paysalary(models.Model):
+class Paysalary(models.Model):
     group = models.ForeignKey("Group", verbose_name="ناوی بنکە",
                               on_delete=models.CASCADE, related_name="salary_group")
     bank = models.ForeignKey("Bank", verbose_name="قاسە",

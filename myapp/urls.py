@@ -28,6 +28,8 @@ router.register(r'resell', ReSellViewSet)
 router.register(r'buy', BuyViewSet)
 router.register(r'cat', CatViewSet)
 router.register(r'price', PriceViewSet)
+router.register(r'employe', EmployeViewSet)
+router.register(r'paysaary', PaySalaryViewSet)
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
