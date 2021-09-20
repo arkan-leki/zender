@@ -29,7 +29,7 @@ SECRET_KEY = 'django-insecure-*1vo4s8m%btn2p!xd@^xh)#yep)zjsr%s6q4#ah0h4rlmoy)l2
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['https://zender-app.herokuapp.com/',]
 
 
 # Application definition
