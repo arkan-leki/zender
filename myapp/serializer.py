@@ -57,7 +57,7 @@ class LocalXSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = LocalCompany
-        fields = ['id', 'name', 'phone', 'code', 'region', 'location', 'image', 'add_date', 'status', 'zip_code', 'state', 'country'
+        fields = ['id', 'name', 'phone', 'code', 'region', 'location', 'image', 'add_date', 'status', 'zip_code', 'state', 'country',
                   'owner_name', 'totallSell', 'mawe', 'totallPay', 'exchange', 'totallSellback', 'attempts', 'payment_company', 'date']
 
     def get_attempts(self, obj):
@@ -76,7 +76,7 @@ class SellXDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SellDetail
-        fields = ['id', 'item_id', 'item', 'item_code', 'item_bag', 'datetime', 'mawe', 'finalprice' , 'total'
+        fields = ['id', 'item_id', 'item', 'item_code', 'item_bag', 'datetime', 'mawe', 'finalprice' , 'total',
                   'quantity', 'price', 'sell', 'date', 'total', 'item_wight', 'item_quantity', 'item_wightAll']
 
 
@@ -234,7 +234,7 @@ class ItemXSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Item
-        fields = ['id', 'name', 'group', 'bag', 'quantity', 'category', 'image', 'add_date', 'deleted', 'popularity'
+        fields = ['id', 'name', 'group', 'bag', 'quantity', 'category', 'image', 'add_date', 'deleted', 'popularity',
                   'barcode', 'trader', 'finalprice', 'mawe', 'wight', 'wightAll', 'price', 'addprice']
 
 
