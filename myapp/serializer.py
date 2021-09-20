@@ -15,7 +15,7 @@ class SellSerializer(serializers.ModelSerializer):
     class Meta:
         model = Sell
         fields = '__all__'
-    
+
 
 
 class TraderXSerializer(serializers.ModelSerializer):
@@ -143,6 +143,12 @@ class PayLoanSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Payloan
+        fields = '__all__'
+
+class CatSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Cat
         fields = '__all__'
 
 
