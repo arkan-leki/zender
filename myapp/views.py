@@ -16,7 +16,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
 
 class LocalViewSet(viewsets.ModelViewSet):
-    queryset = LocalCompany.objects.all()
+    queryset = LocalCompany.objects
     serializer_class = LocalSerializer
 
 
