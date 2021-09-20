@@ -284,9 +284,9 @@ class LocalCompany(models.Model):
                               upload_to='images/', blank=True, null=True, verbose_name='وێنه‌')
     add_date = models.DateTimeField(verbose_name='رێکەوت', auto_now=True)
     status = models.BooleanField(default=False)
-    zip_code = models.CharField(max_length=20)
-    state = models.CharField(max_length=100)
-    country = models.CharField(max_length=100)
+    zip_code = models.CharField(max_length=20 , blank=True, null=True)
+    state = models.CharField(max_length=100 , blank=True, null=True)
+    country = models.CharField(max_length=100 , blank=True, null=True)
     image = ResizedImageField(size=[300, 300], quality=50,
         upload_to='images/', blank=True, null=True, verbose_name="وێنه‌")
 
