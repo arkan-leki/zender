@@ -9,16 +9,16 @@ admin.site.register(Vendor)
 admin.site.register(Bank)
 admin.site.register(Payment)
 
-class SelldetailAdmin(admin.TabularInline):
-    model = SellDetail
-    # fields = ('item','quantity','price')
-    readonly_fields = ['addprice','mawe']
+# class SelldetailAdmin(admin.TabularInline):
+#     model = SellDetail
+#     # fields = ('item','quantity','price')
+#     # readonly_fields = ['addprice','mawe']
 
-class SellAdmin(admin.ModelAdmin):
-    model = Sell
-    inlines = [SelldetailAdmin]
+# class SellAdmin(admin.ModelAdmin):
+#     model = Sell
+#     inlines = [SelldetailAdmin]
 
-admin.site.register(Sell, SellAdmin)
+# admin.site.register(SellAdmin)
 
 
 class OrderdetailAdmin(admin.TabularInline):
@@ -31,7 +31,7 @@ class OrderAdmin(admin.ModelAdmin):
 admin.site.register(Order, OrderAdmin)
 
 admin.site.register(LocalCompany)
-# admin.site.register(SellDetail)
+admin.site.register(SellDetail)
 
 
 class ItemDetailAdmin(admin.TabularInline):
