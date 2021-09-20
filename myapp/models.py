@@ -362,6 +362,10 @@ class Item(models.Model):
     bag = models.CharField(verbose_name="جۆری مەواد", max_length=250)
     wight = models.DecimalField(
         verbose_name="کێشی کاڵا", max_digits=22, decimal_places=2, default="0.0")
+    price = models.DecimalField(
+        verbose_name="نرخی کڕین", max_digits=22, decimal_places=2)
+    addprice = models.DecimalField(
+        verbose_name="رءژەی قازانژ", max_digits=22, decimal_places=2)
     quantity = models.IntegerField(verbose_name="dane")
     barcode = models.CharField("کۆدی مەواد", max_length=150)
     trader = models.ForeignKey("TradeCompany", verbose_name="کۆمپانیا",
@@ -387,28 +391,8 @@ class Item(models.Model):
         return self.wight * self.quantity
 
     @property
-    def price(self):
-        try:
-            queryset = self.item_price.last(status=True)
-            return queryset.price
-        except ObjectDoesNotExist:
-            return 0.0
-
-    @property
     def finalprice(self):
-        try:
-            queryset = self.item_price.last(status=True)
-            return queryset.finalprice
-        except ObjectDoesNotExist:
-            return 0.0
-
-    @property
-    def addprice(self):
-        try:
-            queryset = self.item_price.last(status=True)
-            return queryset.addprice
-        except ObjectDoesNotExist:
-            return 0.0
+        return str(float('{:.2f}'.format(self.price + (self.price * self.addprice))))
 
     @property
     def mawe(self):
