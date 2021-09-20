@@ -389,22 +389,26 @@ class Item(models.Model):
     @property
     def price(self):
         try:
-            queryset = self.item_price.filter(status=True).last
-            return 0
+            queryset = self.item_price.filter(status=True)
+            return queryset.price
         except ObjectDoesNotExist:
             return 0.0
 
     @property
     def finalprice(self):
-        return 0.0
+        try:
+            queryset = self.item_price.filter(status=True)
+            return queryset.finalprice
+        except ObjectDoesNotExist:
+            return 0.0
 
     @property
     def addprice(self):
         try:
-            queryset = self.item_price.filter(status=True).last
+            queryset = self.item_price.filter(status=True)
             return queryset.addprice
         except ObjectDoesNotExist:
-            return self.item_price.filter(status=True).exists()
+            return 0.0
 
     @property
     def mawe(self):
