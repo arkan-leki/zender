@@ -284,11 +284,11 @@ class LocalCompany(models.Model):
                               upload_to='images/', blank=True, null=True, verbose_name='وێنه‌')
     add_date = models.DateTimeField(verbose_name='رێکەوت', auto_now=True)
     status = models.BooleanField(default=False)
-    zip_code = models.CharField(max_length=20 , blank=True, null=True)
-    state = models.CharField(max_length=100 , blank=True, null=True)
-    country = models.CharField(max_length=100 , blank=True, null=True)
+    zip_code = models.CharField(max_length=20, blank=True, null=True)
+    state = models.CharField(max_length=100, blank=True, null=True)
+    country = models.CharField(max_length=100, blank=True, null=True)
     image = ResizedImageField(size=[300, 300], quality=50,
-        upload_to='images/', blank=True, null=True, verbose_name="وێنه‌")
+                              upload_to='images/', blank=True, null=True, verbose_name="وێنه‌")
 
     def __str__(self):
         return self.name
@@ -373,7 +373,6 @@ class Item(models.Model):
                               upload_to='images/', blank=True, null=True, verbose_name="وێنه‌")
     add_date = models.DateTimeField(verbose_name='رێکەوت', auto_now=True)
     deleted = models.BooleanField(default=False)
-    
 
     def __str__(self):
         return self.name
@@ -386,7 +385,7 @@ class Item(models.Model):
     @property
     def wightAll(self):
         return self.wight * self.quantity
-    
+
     @property
     def price(self):
         try:
@@ -394,6 +393,7 @@ class Item(models.Model):
             return queryset.price
         except ObjectDoesNotExist:
             return self.item_price.filter(status=True).exists()
+
     @property
     def finalprice(self):
         try:
@@ -401,6 +401,7 @@ class Item(models.Model):
             return queryset.finalprice
         except ObjectDoesNotExist:
             return self.item_price.filter(status=True).exists()
+
     @property
     def addprice(self):
         try:
@@ -678,11 +679,12 @@ class ReSell(models.Model):
     def __unicode__(self):
         return
 
+
 class Motors(models.Model):
     title = models.CharField(max_length=110, blank=True, null=True)
     number = models.CharField(max_length=11, blank=True, null=True)
     image = ResizedImageField(size=[300, 300], quality=50,
-        upload_to='images/', blank=True, null=True, verbose_name="وێنه‌")
+                              upload_to='images/', blank=True, null=True, verbose_name="وێنه‌")
     status = models.BooleanField(default=False)
 
     def __str__(self):
@@ -698,11 +700,12 @@ class Motors(models.Model):
 class Dliver(models.Model):
     name = models.CharField(max_length=110, blank=True, null=True)
     user = models.ForeignKey(Account, on_delete=models.CASCADE)
-    motor = models.ForeignKey(Motors, related_name='owed_motor', on_delete=models.CASCADE)
+    motor = models.ForeignKey(
+        Motors, related_name='owed_motor', on_delete=models.CASCADE)
     phone = models.CharField(max_length=11, blank=True, null=True)
     phoneId = models.CharField(max_length=110, blank=True, null=True)
     image = ResizedImageField(size=[200, 200], quality=50,
-        upload_to='images/', blank=True, null=True, verbose_name="وێنه‌")
+                              upload_to='images/', blank=True, null=True, verbose_name="وێنه‌")
 
     def __str__(self):
         return str(self.name)
@@ -712,6 +715,7 @@ class Dliver(models.Model):
 
     class Meta:
         verbose_name_plural = "شۆفێر"
+
 
 class Transport(models.Model):
     dliver = models.ForeignKey(Dliver, on_delete=models.CASCADE)
@@ -729,10 +733,12 @@ class Transport(models.Model):
     class Meta:
         verbose_name_plural = "باركراو"
 
+
 class BnkaUser(models.Model):
     bnka = models.ForeignKey(
         Group, related_name='BnkaUser', on_delete=models.CASCADE)
-    user = models.ForeignKey(Account, related_name='BnkasUser', on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        Account, related_name='BnkasUser', on_delete=models.CASCADE)
     date_added = models.DateField(verbose_name='date added', auto_now_add=True)
 
     def __str__(self):
@@ -744,10 +750,12 @@ class BnkaUser(models.Model):
     class Meta:
         verbose_name_plural = "بنکەو بەکارهێنەر"
 
+
 class VendorUser(models.Model):
     vendor = models.ForeignKey(
         Vendor, related_name='VendorUser', on_delete=models.CASCADE)
-    user = models.ForeignKey(Account, related_name='VendosUser', on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        Account, related_name='VendosUser', on_delete=models.CASCADE)
     date_added = models.DateField(verbose_name='date added', auto_now_add=True)
 
     def __str__(self):
@@ -761,7 +769,8 @@ class VendorUser(models.Model):
 
 
 class RequestOrder(models.Model):
-    customer = models.ForeignKey(TradeCompany, related_name='reqtrader', on_delete=models.CASCADE, default=1)
+    customer = models.ForeignKey(
+        TradeCompany, related_name='reqtrader', on_delete=models.CASCADE, default=1)
     request_detail = models.ManyToManyField('RequestDetail')
     totalprice = models.CharField(max_length=11)
     date_added = models.DateField(verbose_name='date added', auto_now_add=True)
@@ -771,8 +780,10 @@ class RequestOrder(models.Model):
     class Meta:
         verbose_name_plural = "داواكاریه‌كان"
 
+
 class RequestSell(models.Model):
-    local = models.ForeignKey(LocalCompany, related_name='reqtlocal', on_delete=models.CASCADE, default=1)
+    local = models.ForeignKey(
+        LocalCompany, related_name='reqtlocal', on_delete=models.CASCADE, default=1)
     request_detail = models.ManyToManyField('RequestDetail')
     totalprice = models.CharField(max_length=11)
     date_added = models.DateField(verbose_name='date added', auto_now_add=True)
