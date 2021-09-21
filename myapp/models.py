@@ -214,6 +214,10 @@ class Vendor(models.Model):
 class TradeCompany(models.Model):
     name = models.CharField(verbose_name="ناوی کۆمپانیا", max_length=250)
     code = models.CharField("کۆدی کۆمپانیا یا ژ.موبایل", max_length=150)
+    address = models.CharField(
+        verbose_name="ناونیشان", max_length=150, blank=True, null=True)
+    phone = models.CharField(verbose_name="ژ.موبایل",
+                             max_length=150, blank=True, null=True)
     date = models.DateField(
         verbose_name="بەروار", auto_now_add=True, blank=True)
     group = models.ForeignKey("Group", verbose_name="ناوی بنکە",

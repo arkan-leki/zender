@@ -27,7 +27,7 @@ class TraderXSerializer(serializers.ModelSerializer):
     class Meta:
         model = TradeCompany
         fields = ['id', 'name', 'code', 'exchange', 'group', 'image', 'add_date', 'status',
-                  'mawe', 'totallLoan', 'date', 'totallBuy']
+                  'mawe', 'totallLoan', 'date', 'totallBuy', 'address', 'phone']
 
 
 class TraderSerializer(serializers.ModelSerializer):
@@ -76,7 +76,7 @@ class SellXDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = SellDetail
-        fields = ['id', 'item_id', 'item', 'item_code', 'item_bag', 'datetime', 'mawe', 'finalprice' , 'total',
+        fields = ['id', 'item_id', 'item', 'item_code', 'item_bag', 'datetime', 'mawe', 'finalprice', 'total',
                   'quantity', 'price', 'sell', 'date', 'total', 'item_wight', 'item_quantity', 'item_wightAll']
 
 
@@ -144,6 +144,7 @@ class BuySerializer(serializers.ModelSerializer):
         model = buy
         fields = '__all__'
 
+
 class PaySalarySerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -163,7 +164,8 @@ class BankSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Bank
-        fields = ['id', 'income', 'loan', 'group', 'group_name','datetime', 'date']
+        fields = ['id', 'income', 'loan', 'group',
+                  'group_name', 'datetime', 'date']
 
 
 class PayLoanSerializer(serializers.ModelSerializer):
