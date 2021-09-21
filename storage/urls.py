@@ -17,9 +17,15 @@ from django.contrib import admin
 from django.urls import path, re_path
 from django.urls.conf import include
 from django.views.generic import TemplateView
+from storage import settings
+from django.conf.urls.static import static
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('myapp.urls')),
     re_path(r'^.*', TemplateView.as_view(template_name='index.html'))
-]
+]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+print('urls.py MEDIA_URL: %s' % (settings.MEDIA_URL))
+print('urls.py MEDIA_ROOT: %s' % (settings.MEDIA_ROOT))

@@ -42,28 +42,6 @@ class SellDetailSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class PaySerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Payment
-        fields = '__all__'
-
-
-class LocalXSerializer(serializers.ModelSerializer):
-    region = serializers.ReadOnlyField(source='region.name')
-    totallSell = serializers.ReadOnlyField()
-    attempts = serializers.SerializerMethodField()
-    payment_company = PaySerializer(read_only=True, many=True)
-
-    class Meta:
-        model = LocalCompany
-        fields = ['id', 'name', 'phone', 'code', 'region', 'location', 'image', 'add_date', 'status', 'zip_code', 'state', 'country',
-                  'owner_name', 'totallSell', 'mawe', 'totallPay', 'exchange', 'totallSellback', 'attempts', 'payment_company', 'date']
-
-    def get_attempts(self, obj):
-        quiztakers = Sell.objects.filter(local=obj)
-        return SellSerializer(quiztakers, many=True).data
-
 
 class SellXDetailSerializer(serializers.ModelSerializer):
     item = serializers.ReadOnlyField(source='item.name')
@@ -119,7 +97,7 @@ class SellXSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Sell
-        fields = ['id', 'url', 'local_id', 'local_name', 'local_code', 'sell_detail', 'date', 'datetime', 'totall', 'totallint', 'totalback',
+        fields = ['id', 'local_id', 'local_name', 'local_code', 'sell_detail', 'date', 'datetime', 'totall', 'totallint', 'totalback',
                   'discount', 'group_name', 'group', 'vendor', 'vendor_name', 'group_phone', 'vendor_phone', 'local_phone', 'local_mawe', 'local_region']
 
 
@@ -166,6 +144,18 @@ class BankSerializer(serializers.ModelSerializer):
         model = Bank
         fields = ['id', 'income', 'loan', 'group',
                   'group_name', 'datetime', 'date']
+
+class PaySerializer(serializers.ModelSerializer):
+    local_name = serializers.ReadOnlyField(source='local.name')
+    local_owner_name = serializers.ReadOnlyField(source='local.owner_name')
+    group_name = serializers.ReadOnlyField(source='group.name')
+    bank_loan = serializers.ReadOnlyField(source='bank.loan')
+    bank_income = serializers.ReadOnlyField(source='bank.income')
+    payment_bank = BankSerializer(read_only=True, many=True)
+
+    class Meta:
+        model = Payment
+        fields = ['id', 'date', 'datetime', 'local', 'group', 'bank', 'local_name', 'group_name', 'bank_loan', 'bank_income', 'payment_bank', 'local_owner_name']
 
 
 class PayLoanSerializer(serializers.ModelSerializer):
@@ -256,3 +246,20 @@ class KashHasb(serializers.ModelSerializer):
     class Meta:
         model = Group
         fields = ['id', 'url', 'name', 'phone', 'sell_group', 'item_group']
+
+
+
+class LocalXSerializer(serializers.ModelSerializer):
+    region = serializers.ReadOnlyField(source='region.name')
+    totallSell = serializers.ReadOnlyField()
+    attempts = serializers.SerializerMethodField()
+    payment_compnay = PaySerializer(read_only=True, many=True)
+
+    class Meta:
+        model = LocalCompany
+        fields = ['id', 'name', 'phone', 'code', 'region', 'location', 'image', 'add_date', 'status', 'zip_code', 'state', 'country',
+                  'owner_name', 'totallSell', 'mawe', 'totallPay', 'exchange', 'totallSellback', 'attempts', 'date', 'payment_compnay']
+
+    def get_attempts(self, obj):
+        quiztakers = Sell.objects.filter(local=obj)
+        return SellXSerializer(quiztakers, many=True).data

@@ -148,3 +148,19 @@ class EmployeViewSet(viewsets.ModelViewSet):
 class PaySalaryViewSet(viewsets.ModelViewSet):
     queryset = Epmploye.objects.all()
     serializer_class = PaySalarySerializer
+
+
+class LocalXSerializer(serializers.ModelSerializer):
+    region = serializers.ReadOnlyField(source='region.name')
+    totallSell = serializers.ReadOnlyField()
+    attempts = serializers.SerializerMethodField()
+    # payment_company = PaySerializer(read_only=True, many=True)
+
+    class Meta:
+        model = LocalCompany
+        fields = ['id', 'name', 'phone', 'code', 'region', 'location', 'image', 'add_date', 'status', 'zip_code', 'state', 'country',
+                  'owner_name', 'totallSell', 'mawe', 'totallPay', 'exchange', 'totallSellback', 'attempts', 'date']
+
+    def get_attempts(self, obj):
+        quiztakers = Sell.objects.filter(local=obj)
+        return SellSerializer(quiztakers, many=True).data
