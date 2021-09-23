@@ -223,11 +223,12 @@ class OrderXSerializer(serializers.ModelSerializer):
 class ItemXSerializer(serializers.ModelSerializer):
     group = serializers.ReadOnlyField(source='group.name')
     trader = serializers.ReadOnlyField(source='trader.name')
+    category_name = serializers.ReadOnlyField(source='category.name')
 
     class Meta:
         model = Item
         fields = ['id', 'name', 'group', 'bag', 'quantity', 'category', 'image', 'add_date', 'deleted', 'popularity',
-                  'barcode', 'trader', 'finalprice', 'mawe', 'wight', 'wightAll', 'price', 'addprice']
+                  'barcode', 'trader', 'finalprice', 'mawe', 'wight', 'wightAll', 'price', 'addprice', 'stock', 'trader_id', 'category_name']
 
 
 class GroupXSerializer(serializers.ModelSerializer):
