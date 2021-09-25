@@ -70,7 +70,7 @@ class SellDetailViewSet(viewsets.ModelViewSet):
 
 
 class SellXDetailViewSet(viewsets.ModelViewSet):
-    queryset = SellDetail.objects.all()
+    queryset = SellDetail.objects.all().order_by('-datetime')
     serializer_class = SellXDetailSerializer
 
 

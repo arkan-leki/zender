@@ -385,7 +385,7 @@ class Item(models.Model):
 
     @property
     def popularity(self):
-        likes = self.item_sell.aggregate(Sum('quantity')).values()
+        likes = self.item_sell.aggregate(Sum('quantity'))['quantity__sum']
         return likes
 
     @property
@@ -449,6 +449,7 @@ class Sell(models.Model):
         verbose_name="بەروار", auto_now_add=True, blank=True)
     datetime = models.DateTimeField(
         verbose_name="رێکەوت", auto_now_add=True, blank=True)
+    status = models.BooleanField(default=False)
 
     def __str__(self):
         return "wasl " + str(self.id)
@@ -493,6 +494,8 @@ class SellDetail(models.Model):
         verbose_name="بەروار", auto_now_add=True, blank=True)
     datetime = models.DateTimeField(
         verbose_name="رێکەوت", auto_now_add=True, blank=True)
+    status = models.BooleanField(default=False)
+
 
     def total(self):
         return self.price * self.quantity

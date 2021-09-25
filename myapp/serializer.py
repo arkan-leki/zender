@@ -55,7 +55,7 @@ class SellXDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = SellDetail
         fields = ['id', 'item_id', 'item', 'item_code', 'item_bag', 'datetime', 'mawe', 'finalprice', 'total',
-                  'quantity', 'price', 'sell', 'date', 'total', 'item_wight', 'item_quantity', 'item_wightAll']
+                  'quantity', 'price', 'sell', 'date', 'total', 'item_wight', 'item_quantity', 'item_wightAll','status']
 
 
 class LocalSerializer(serializers.ModelSerializer):
