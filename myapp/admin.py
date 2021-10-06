@@ -2,13 +2,15 @@ from django.contrib import admin
 from django.contrib.admin.decorators import display
 from myapp.models import *
 # Register your models here.
-# admin.site.register(TradeCompany)
+admin.site.register(Account)
 admin.site.register(Item)
 admin.site.register(Region)
 admin.site.register(Vendor)
 admin.site.register(Bank)
 admin.site.register(Payment)
-
+admin.site.register(Transport)
+admin.site.register(Dliver)
+admin.site.register(Motors)
 # class SelldetailAdmin(admin.TabularInline):
 #     model = SellDetail
 #     # fields = ('item','quantity','price')

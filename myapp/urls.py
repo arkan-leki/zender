@@ -30,6 +30,7 @@ router.register(r'cat', CatViewSet)
 router.register(r'price', PriceViewSet)
 router.register(r'employe', EmployeViewSet)
 router.register(r'paysaary', PaySalaryViewSet)
+router.register(r'oldacc', OldAccrViewSet)
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.

@@ -302,6 +302,7 @@ class LocalCompany(models.Model):
     def mawe(self):
         paylaon = 0
         buy = 0
+        oldass = 0
         if(self.payment_compnay.all()):
             for pay in self.payment_compnay.all():
                 paylaon = paylaon + pay.bank.income
@@ -310,7 +311,11 @@ class LocalCompany(models.Model):
             for laon in self.sell_compnay.all():
                 buy = buy + laon.totallint
 
-        return (buy - paylaon) + self.exchange - decimal.Decimal(self.totallSellback)
+        if(self.oldacc_compnay.all()):
+            for laon in self.oldacc_compnay.all():
+                oldass = oldass + laon.loan
+
+        return (buy - paylaon) + self.exchange - decimal.Decimal(self.totallSellback) + oldass
 
     @property
     def totallPay(self):
@@ -385,8 +390,17 @@ class Item(models.Model):
 
     @property
     def popularity(self):
-        likes = self.item_sell.aggregate(Sum('quantity'))['quantity__sum']
+        likes = 0
+        if(self.item_sell.aggregate(Sum('quantity'))['quantity__sum']):
+            likes = self.item_sell.aggregate(Sum('quantity'))['quantity__sum']
         return likes
+
+    @property
+    def ordered(self):
+        krin = 0
+        if(self.item_order.aggregate(Sum('quantity'))['quantity__sum']):
+            krin = self.item_order.aggregate(Sum('quantity'))['quantity__sum']
+        return krin
 
     @property
     def wightAll(self):
@@ -496,7 +510,6 @@ class SellDetail(models.Model):
         verbose_name="رێکەوت", auto_now_add=True, blank=True)
     status = models.BooleanField(default=False)
 
-
     def total(self):
         return self.price * self.quantity
 
@@ -579,6 +592,24 @@ class Payment(models.Model):
                               on_delete=models.CASCADE, related_name="payment_compnay")
     bank = models.ForeignKey("Bank", verbose_name="قاسە",
                              on_delete=models.CASCADE, related_name="payment_bank")
+    date = models.DateField(
+        verbose_name="بەروار", auto_now_add=True, blank=True)
+    datetime = models.DateTimeField(
+        verbose_name="رێکەوت", auto_now_add=True, blank=True)
+
+    class Meta:
+        verbose_name_plural = "هه‌ژمار"
+
+
+class OldAcc(models.Model):
+    group = models.ForeignKey("Group", verbose_name="ناوی بنکە",
+                              on_delete=models.CASCADE, related_name="oldacc_group")
+    local = models.ForeignKey("LocalCompany", verbose_name="کڕیار",
+                              on_delete=models.CASCADE, related_name="oldacc_compnay")
+    income = models.DecimalField(
+        verbose_name="هاتوو", max_digits=22, decimal_places=2)
+    loan = models.DecimalField(
+        verbose_name="دەرچووو", max_digits=22, decimal_places=2)
     date = models.DateField(
         verbose_name="بەروار", auto_now_add=True, blank=True)
     datetime = models.DateTimeField(
