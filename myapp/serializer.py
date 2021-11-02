@@ -1,4 +1,5 @@
 # Serializers define the API representation.
+from django.db.models import fields
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import serializers
 from .models import *
@@ -52,19 +53,21 @@ class OldAccSerializer(serializers.ModelSerializer):
 
 
 class SellXDetailSerializer(serializers.ModelSerializer):
-    item = serializers.ReadOnlyField(source='item.name')
-    item_wight = serializers.ReadOnlyField(source='item.wight')
-    item_quantity = serializers.ReadOnlyField(source='item.quantity')
-    item_wightAll = serializers.ReadOnlyField(source='item.wightAll')
+    item_name = serializers.ReadOnlyField(source='item.name')
+    # item_wight = serializers.ReadOnlyField(source='item.wight')
+    # item_quantity = serializers.ReadOnlyField(source='item.quantity')
+    # item_wightAll = serializers.ReadOnlyField(source='item.wightAll')
     item_code = serializers.ReadOnlyField(source='item.barcode')
-    item_bag = serializers.ReadOnlyField(source='item.bag')
+    # item_bag = serializers.ReadOnlyField(source='item.bag')
     item_group = serializers.ReadOnlyField(source='item.group.id')
-    sell = serializers.ReadOnlyField(source='sell.id')
+    item_price = serializers.ReadOnlyField(source='item.price')
+    # sell = serializers.ReadOnlyField(source='sell.id')
+    item_group_name = serializers.ReadOnlyField(source='item.group.name')
 
     class Meta:
         model = SellDetail
-        fields = ['id', 'item_id', 'item', 'item_code', 'item_bag', 'datetime', 'mawe', 'finalprice', 'total', 'item_group',
-                  'quantity', 'price', 'sell', 'date', 'total', 'item_wight', 'item_quantity', 'item_wightAll', 'status']
+        fields = ['id', 'item', 'item_name', 'item_code', 'datetime', 'mawe', 'finalprice', 'total', 'item_group', 'item_price',
+                  'quantity', 'price', 'sell', 'date', 'total', 'status', 'item_group_name']
 
 
 class LocalSerializer(serializers.ModelSerializer):
@@ -92,7 +95,6 @@ class EmployeSerializer(serializers.ModelSerializer):
 
 
 class SellXSerializer(serializers.ModelSerializer):
-    local_id = serializers.ReadOnlyField(source='local.id')
     local_name = serializers.ReadOnlyField(source='local.name')
     local_code = serializers.ReadOnlyField(source='local.code')
     local_phone = serializers.ReadOnlyField(source='local.phone')
@@ -106,15 +108,14 @@ class SellXSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Sell
-        fields = ['id', 'local_id', 'local_name', 'local_code', 'sell_detail', 'date', 'datetime', 'totall', 'totallint', 'totalback',
-                  'discount', 'group_name', 'group', 'vendor', 'vendor_name', 'group_phone', 'vendor_phone', 'local_phone', 'local_mawe', 'local_region']
-
+        fields = ['id', 'local', 'local_name', 'local_code', 'sell_detail', 'date', 'datetime', 'totall', 'totallint', 'totalback', 'status',
+                  'discount', 'group_name', 'group', 'vendor', 'vendor_name', 'group_phone', 'vendor_phone', 'local_phone', 'local_mawe', 'local_region', 'totallBar']
 
 class GroupSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Group
-        fields = ['name', 'phone', 'image', 'add_date', 'status', 'items', 'vendors',
+        fields = ['id', 'name', 'phone', 'image', 'add_date', 'status', 'items', 'vendors',
                   'totallSell', 'totallOrder', 'payments', 'loans', 'buys', 'banks']
 
 
@@ -233,24 +234,24 @@ class OrderXSerializer(serializers.ModelSerializer):
 
 
 class ItemXSerializer(serializers.ModelSerializer):
-    group = serializers.ReadOnlyField(source='group.name')
+    group_name = serializers.ReadOnlyField(source='group.name')
     trader = serializers.ReadOnlyField(source='trader.name')
     category_name = serializers.ReadOnlyField(source='category.name')
     item_sell = SellDetailSerializer(read_only=True, many=True)
 
     class Meta:
         model = Item
-        fields = ['id', 'name', 'group', 'bag', 'quantity', 'category', 'image', 'add_date', 'deleted', 'popularity', 'ordered', 'deleted',
+        fields = ['id', 'name', 'group', 'group_name', 'bag', 'quantity', 'category', 'image', 'add_date', 'deleted', 'popularity', 'ordered', 'deleted',
                   'barcode', 'trader', 'finalprice', 'mawe', 'wight', 'wightAll', 'price', 'addprice', 'stock', 'trader_id', 'category_name', 'item_sell']
 
 
 class GroupXSerializer(serializers.ModelSerializer):
-    sell_group = SellXSerializer(read_only=True, many=True)
-    item_group = ItemXSerializer(read_only=True, many=True)
+    # sell_group = SellXSerializer(read_only=True, many=True)
+    # item_group = ItemXSerializer(read_only=True, many=True)
 
     class Meta:
         model = Group
-        fields = ['id', 'url', 'name', 'phone', 'sell_group', 'item_group']
+        fields = ['id', 'url', 'name', 'phone']
 
 
 class KashHasb(serializers.ModelSerializer):
@@ -263,17 +264,19 @@ class KashHasb(serializers.ModelSerializer):
 
 
 class LocalXSerializer(serializers.ModelSerializer):
-    region = serializers.ReadOnlyField(source='region.name')
+    region_name = serializers.ReadOnlyField(source='region.name')
     totallSell = serializers.ReadOnlyField()
-    attempts = serializers.SerializerMethodField()
-    payment_compnay = PaySerializer(read_only=True, many=True)
-    oldacc_compnay = OldAccSerializer(read_only=True, many=True)
+    # attempts = serializers.SerializerMethodField()
+    # payment_compnay = PaySerializer(read_only=True, many=True)
+    # oldacc_compnay = OldAccSerializer(read_only=True, many=True)
 
     class Meta:
         model = LocalCompany
-        fields = ['id', 'name', 'phone', 'code', 'region', 'location', 'image', 'add_date', 'status', 'zip_code', 'state', 'country',
-                  'owner_name', 'totallSell', 'mawe', 'totallPay', 'exchange', 'totallSellback', 'attempts', 'date', 'payment_compnay', 'oldacc_compnay']
+        fields = ['id', 'name', 'phone', 'code', 'region', 'region_name', 'location', 'image', 'add_date', 'status', 'zip_code', 'state', 'country',
+                  'owner_name', 'totallSell', 'mawe', 'totallPay', 'totallOld', 'exchange', 'totallSellback', 'date']
+        # fields = ['id', 'name', 'phone', 'code', 'region', 'location', 'image', 'add_date', 'status', 'zip_code', 'state', 'country',
+        #           'owner_name', 'totallSell', 'mawe', 'totallPay', 'exchange', 'totallSellback', 'attempts', 'date', 'payment_compnay', 'oldacc_compnay']
 
-    def get_attempts(self, obj):
-        quiztakers = Sell.objects.filter(local=obj)
-        return SellXSerializer(quiztakers, many=True).data
+    # def get_attempts(self, obj):
+    #     quiztakers = Sell.objects.filter(local=obj)
+    #     return SellXSerializer(quiztakers, many=True).data

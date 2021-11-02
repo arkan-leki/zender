@@ -1,5 +1,6 @@
 from datetime import datetime
 import decimal
+import re
 from django.db import models
 from django.db.models.aggregates import Avg, Sum
 from django.db.models.expressions import F
@@ -300,36 +301,60 @@ class LocalCompany(models.Model):
 
     @property
     def mawe(self):
-        paylaon = 0
-        buy = 0
-        oldass = 0
-        if(self.payment_compnay.all()):
-            for pay in self.payment_compnay.all():
-                paylaon = paylaon + pay.bank.income
+        groups = Group.objects.all()
+        groupmawe = {}
+        for group in groups:
+            paylaon = 0
+            buy = 0
+            oldass = 0
+            if(self.payment_compnay.filter(group=group.id)):
+                for pay in self.payment_compnay.filter(group=group.id):
+                    paylaon = paylaon + (pay.bank.income - pay.bank.loan)
 
-        if(self.sell_compnay.all()):
-            for laon in self.sell_compnay.all():
-                buy = buy + laon.totallint
+            if(self.sell_compnay.filter(group=group.id)):
+                for laon in self.sell_compnay.filter(group=group.id):
+                    buy = buy + laon.totallint
 
-        if(self.oldacc_compnay.all()):
-            for laon in self.oldacc_compnay.all():
-                oldass = oldass + laon.loan
+            if(self.oldacc_compnay.filter(group=group.id)):
+                for laon in self.oldacc_compnay.filter(group=group.id):
+                    oldass = oldass + (laon.loan - laon.income)
 
-        return (buy - paylaon) + self.exchange - decimal.Decimal(self.totallSellback) + oldass
+            groupmawe[group.id] = (buy - paylaon) + self.exchange - decimal.Decimal(self.totallSellback) + oldass
+        return groupmawe
 
     @property
+    def totallOld(self):
+        groups = Group.objects.all()
+        totallOlds = {}
+        for group in groups:
+            oldass = 0
+            for laon in self.oldacc_compnay.filter(group=group.id):
+                oldass = oldass + (laon.loan - laon.income)
+            totallOlds[group.id]=  str(float('{:.2f}'.format(oldass)))
+        return totallOlds
+        
+    @property
     def totallPay(self):
-        totalls = 0
-        for pay in self.payment_compnay.all():
-            totalls = totalls + pay.bank.income
-        return str(float('{:.2f}'.format(totalls)))
+        groups = Group.objects.all()
+        totallPays = {}
+        for group in groups:
+            totalls = 0
+            for pay in self.payment_compnay.filter(group=group.id):
+                totalls = totalls + pay.bank.income
+            totallPays[group.id]=  str(float('{:.2f}'.format(totalls)))
+        return totallPays
 
     @property
     def totallSell(self):
-        totalls = 0
-        for totall in self.sell_compnay.all():
-            totalls = totalls + totall.totallint
-        return str(float('{:.2f}'.format(totalls)))
+        groups = Group.objects.all()
+        totallSells = {}
+        for group in groups:
+            totalls = 0
+            for totall in self.sell_compnay.filter(group=group.id):
+                totalls = totalls + totall.totallint
+            totallSells[group.id] =  str(float('{:.2f}'.format(totalls)))
+        return totallSells
+
 
     @property
     def totallSellback(self):
@@ -368,7 +393,7 @@ class Item(models.Model):
     name = models.CharField(verbose_name="ناوی مەواد", max_length=250)
     bag = models.CharField(verbose_name="جۆری مەواد", max_length=250)
     wight = models.DecimalField(
-        verbose_name="کێشی کاڵا", max_digits=22, decimal_places=2, default="0.0")
+        verbose_name="کێشی کاڵا", max_digits=22, decimal_places=2, default=0)
     price = models.DecimalField(
         verbose_name="نرخی کڕین", max_digits=22, decimal_places=2)
     addprice = models.DecimalField(
@@ -408,7 +433,8 @@ class Item(models.Model):
 
     @property
     def finalprice(self):
-        return str(float('{:.2f}'.format(self.price + (self.price * self.addprice))))
+        price = self.price + (self.price * self.addprice)
+        return str(float('{:.2f}'.format(price)))
 
     @property
     def mawe(self):
@@ -467,7 +493,14 @@ class Sell(models.Model):
 
     def __str__(self):
         return "wasl " + str(self.id)
-
+    
+    @property
+    def totallBar(self):
+        total = 0
+        if len(self.sell_detail.all()):
+            total = self.sell_detail.aggregate(Sum('quantity'))['quantity__sum']
+        return str(total)
+    
     @property
     def totall(self):
         total = 0

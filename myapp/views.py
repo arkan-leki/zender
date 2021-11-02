@@ -85,7 +85,7 @@ class SellXViewSet(viewsets.ModelViewSet):
     queryset = Sell.objects.all().order_by('-datetime')
     serializer_class = SellXSerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['group','local_id','date']
+    filterset_fields = ['group','local_id','status']
 
 
 class OrderViewSet(viewsets.ModelViewSet):
