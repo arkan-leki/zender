@@ -311,8 +311,8 @@ class LocalCompany(models.Model):
                 for pay in self.payment_compnay.filter(group=group.id):
                     paylaon = paylaon + (pay.bank.income - pay.bank.loan)
 
-            if(self.sell_compnay.filter(group=group.id)):
-                for laon in self.sell_compnay.filter(group=group.id):
+            if(self.sell_compnay.filter(group=group.id,status=True)):
+                for laon in self.sell_compnay.filter(group=group.id,status=True):
                     buy = buy + laon.totallint
 
             if(self.oldacc_compnay.filter(group=group.id)):

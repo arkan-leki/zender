@@ -72,7 +72,8 @@ class SellDetailViewSet(viewsets.ModelViewSet):
 class SellXDetailViewSet(viewsets.ModelViewSet):
     queryset = SellDetail.objects.all().order_by('-datetime')
     serializer_class = SellXDetailSerializer
-
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['item']
 
 class SellViewSet(viewsets.ModelViewSet):
     queryset = Sell.objects.all()
@@ -98,7 +99,7 @@ class OldAccrViewSet(viewsets.ModelViewSet):
     queryset = OldAcc.objects.all()
     serializer_class =OldAccSerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['group']
+    filterset_fields = ['group', 'local']
 
 class OrderXViewSet(viewsets.ModelViewSet):
     queryset = Order.objects.all().order_by('-datetime')
@@ -129,6 +130,8 @@ class BankViewSet(viewsets.ModelViewSet):
 class PayViewSet(viewsets.ModelViewSet):
     queryset = Payment.objects.all().order_by('-datetime')
     serializer_class = PaySerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['group', 'local']
 
 class BuyViewSet(viewsets.ModelViewSet):
     queryset = buy.objects.all()
