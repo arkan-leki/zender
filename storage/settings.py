@@ -49,7 +49,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'django_filters',
-    # 'storages',
+    'storages',
 ]
 
 MIDDLEWARE = [
@@ -167,14 +167,15 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
 
-CORS_ORIGIN_ALLOW_ALL = True
+# CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOWED_ORIGINS = [
     'https://zender-app.herokuapp.com',
-    "http://localhost:8000",
-    "http://127.0.0.1:8000",
+    # "http://localhost:8000",
+    # "http://127.0.0.1:8000",
 ]
 
-CORS_URLS_REGEX = r'^/.*$'
+CORS_URLS_REGEX = r'^/api/.*$'
+# CORS_URLS_REGEX = r'^/.*$'
 
 CORS_ALLOW_METHODS = [
     'DELETE',
@@ -196,5 +197,33 @@ CORS_ALLOW_HEADERS = [
     'x-csrftoken',
     'x-requested-with',
 ]
+
+USE_S3 = True
+
+if USE_S3:
+    # aws settings
+    AWS_ACCESS_KEY_ID = "AKIAVKP76FM2ZYBV3PV4"
+    AWS_SECRET_ACCESS_KEY = "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"
+    S3_BUCKET_NAME = "sultandelivery"
+    AWS_STORAGE_BUCKET_NAME = "sultandelivery"
+    AWS_DEFAULT_ACL = None
+    AWS_S3_FILE_OVERWEITE = False
+    AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
+    AWS_S3_OBJECT_PARAMETERS = {'CacheControl': 'max-age=86400'}
+
+    # s3 static settings
+    STATIC_LOCATION = 'static'
+    STATIC_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/{STATIC_LOCATION}/'
+    STATICFILES_STORAGE = 'sultan_delivery.storage_backends.StaticStorage'
+    # s3 public media settings
+    PUBLIC_MEDIA_LOCATION = 'media'
+    MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/{PUBLIC_MEDIA_LOCATION}/'
+    DEFAULT_FILE_STORAGE = 'sultan_delivery.storage_backends.PublicMediaStorage'
+else:
+    STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
+    STATIC_URL = '/static/'
+    MEDIA_URL = '/media/'
+    STATIC_ROOT = os.path.join(BASE_DIR, 'static_root')
+    MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 django_heroku.settings(locals())
