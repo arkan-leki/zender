@@ -202,8 +202,8 @@ USE_S3 = True
 
 if USE_S3:
     # aws settings
-    AWS_ACCESS_KEY_ID = "AKIAVKP76FM2ZYBV3PV4"
-    AWS_SECRET_ACCESS_KEY = "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"
+    AWS_ACCESS_KEY_ID = "AKIAVKP76FM2S4DBQEY7"
+    AWS_SECRET_ACCESS_KEY = "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"
     S3_BUCKET_NAME = "sultandelivery"
     AWS_STORAGE_BUCKET_NAME = "sultandelivery"
     AWS_DEFAULT_ACL = None
@@ -227,3 +227,4 @@ else:
     MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 django_heroku.settings(locals())
+
