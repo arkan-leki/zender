@@ -21,7 +21,7 @@ class LocalViewSet(viewsets.ModelViewSet):
 
 
 class LocalXViewSet(viewsets.ModelViewSet):
-    queryset = LocalCompany.objects.all()
+    queryset = LocalCompany.objects.all().order_by('name')
     serializer_class = LocalXSerializer
 
 
@@ -42,26 +42,26 @@ class CatViewSet(viewsets.ModelViewSet):
     serializer_class = CatSerializer
 
 class ItemViewSet(viewsets.ModelViewSet):
-    queryset = Item.objects.all()
+    queryset = Item.objects.all().order_by('id')
     serializer_class = ItemSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['group']
 
 
 class GroupViewSet(viewsets.ModelViewSet):
-    queryset = Group.objects.all()
+    queryset = Group.objects.all().order_by('id')
     serializer_class = GroupSerializer
 
 class GroupXViewSet(viewsets.ModelViewSet):
-    queryset = Group.objects.all()
+    queryset = Group.objects.all().order_by('id')
     serializer_class = GroupXSerializer
 
 
 class ItemXViewSet(viewsets.ModelViewSet):
-    queryset = Item.objects.all()
+    queryset = Item.objects.all().order_by('id')
     serializer_class = ItemXSerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['group']
+    filterset_fields = ['group', 'deleted']
 
 
 class SellDetailViewSet(viewsets.ModelViewSet):
@@ -70,7 +70,7 @@ class SellDetailViewSet(viewsets.ModelViewSet):
 
 
 class SellXDetailViewSet(viewsets.ModelViewSet):
-    queryset = SellDetail.objects.all()
+    queryset = SellDetail.objects.all().order_by('-datetime')
     serializer_class = SellXDetailSerializer
 
 
@@ -82,10 +82,10 @@ class SellViewSet(viewsets.ModelViewSet):
 
 
 class SellXViewSet(viewsets.ModelViewSet):
-    queryset = Sell.objects.all().order_by('-datetime')
+    queryset = Sell.objects.order_by('-datetime')
     serializer_class = SellXSerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['group','local_id','date']
+    filterset_fields = ['group','local_id','status']
 
 
 class OrderViewSet(viewsets.ModelViewSet):
@@ -94,6 +94,11 @@ class OrderViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['group']
 
+class OldAccrViewSet(viewsets.ModelViewSet):
+    queryset = OldAcc.objects.all()
+    serializer_class =OldAccSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['group','local']
 
 class OrderXViewSet(viewsets.ModelViewSet):
     queryset = Order.objects.all().order_by('-datetime')
@@ -108,7 +113,7 @@ class OrderedViewSet(viewsets.ModelViewSet):
 
 
 class RegionViewSet(viewsets.ModelViewSet):
-    queryset = Region.objects.all()
+    queryset = Region.objects.all().order_by('id')
     serializer_class = RegionSerializer
 
 class VendorViewSet(viewsets.ModelViewSet):
@@ -122,8 +127,10 @@ class BankViewSet(viewsets.ModelViewSet):
     filterset_fields = ['group']
 
 class PayViewSet(viewsets.ModelViewSet):
-    queryset = Payment.objects.all()
+    queryset = Payment.objects.all().order_by('-datetime')
     serializer_class = PaySerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['local']
 
 class BuyViewSet(viewsets.ModelViewSet):
     queryset = buy.objects.all()
@@ -150,17 +157,18 @@ class PaySalaryViewSet(viewsets.ModelViewSet):
     serializer_class = PaySalarySerializer
 
 
-class LocalXSerializer(serializers.ModelSerializer):
-    region = serializers.ReadOnlyField(source='region.name')
-    totallSell = serializers.ReadOnlyField()
-    attempts = serializers.SerializerMethodField()
-    # payment_company = PaySerializer(read_only=True, many=True)
+# class LocalXSerializer(serializers.ModelSerializer):
+#     region = serializers.ReadOnlyField(source='region.name')
+#     totallSell = serializers.ReadOnlyField()
+#     attempts = serializers.SerializerMethodField()
+#     # oldacc_compnay = OldAccSerializer(read_only=True, many=True)
+#     # payment_company = PaySerializer(read_only=True, many=True)
 
-    class Meta:
-        model = LocalCompany
-        fields = ['id', 'name', 'phone', 'code', 'region', 'location', 'image', 'add_date', 'status', 'zip_code', 'state', 'country',
-                  'owner_name', 'totallSell', 'mawe', 'totallPay', 'exchange', 'totallSellback', 'attempts', 'date']
+#     class Meta:
+#         model = LocalCompany
+#         fields = ['id', 'name', 'phone', 'code', 'region', 'location', 'image', 'add_date', 'status', 'zip_code', 'state', 'country',
+#                   'owner_name', 'totallSell', 'mawe', 'totallPay', 'exchange', 'totallSellback', 'attempts', 'date']
 
-    def get_attempts(self, obj):
-        quiztakers = Sell.objects.filter(local=obj)
-        return SellSerializer(quiztakers, many=True).data
+#     def get_attempts(self, obj):
+#         quiztakers = Sell.objects.filter(local=obj)
+#         return SellSerializer(quiztakers, many=True).data
