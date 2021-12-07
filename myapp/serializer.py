@@ -54,9 +54,8 @@ class OldAccSerializer(serializers.ModelSerializer):
 
 class SellXDetailSerializer(serializers.ModelSerializer):
     item_name = serializers.ReadOnlyField(source='item.name')
-    # item_wight = serializers.ReadOnlyField(source='item.wight')
+    item_wight = serializers.ReadOnlyField(source='item.wight')
     # item_quantity = serializers.ReadOnlyField(source='item.quantity')
-    # item_wightAll = serializers.ReadOnlyField(source='item.wightAll')
     item_code = serializers.ReadOnlyField(source='item.barcode')
     # item_bag = serializers.ReadOnlyField(source='item.bag')
     item_group = serializers.ReadOnlyField(source='item.group.id')
@@ -67,7 +66,7 @@ class SellXDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = SellDetail
         fields = ['id', 'item', 'item_name', 'item_code', 'datetime', 'mawe', 'finalprice', 'total', 'item_group', 'item_price',
-                  'quantity', 'price', 'sell', 'date', 'total', 'status', 'item_group_name']
+                  'quantity', 'price', 'sell', 'date', 'total', 'status', 'item_group_name', 'item_wight', 'allwight']
 
 
 class LocalSerializer(serializers.ModelSerializer):

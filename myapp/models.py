@@ -311,15 +311,16 @@ class LocalCompany(models.Model):
                 for pay in self.payment_compnay.filter(group=group.id):
                     paylaon = paylaon + (pay.bank.income - pay.bank.loan)
 
-            if(self.sell_compnay.filter(group=group.id,status=True)):
-                for laon in self.sell_compnay.filter(group=group.id,status=True):
+            if(self.sell_compnay.filter(group=group.id, status=True)):
+                for laon in self.sell_compnay.filter(group=group.id, status=True):
                     buy = buy + laon.totallint
 
             if(self.oldacc_compnay.filter(group=group.id)):
                 for laon in self.oldacc_compnay.filter(group=group.id):
                     oldass = oldass + (laon.loan - laon.income)
 
-            groupmawe[group.id] = (buy - paylaon) + self.exchange - decimal.Decimal(self.totallSellback) + oldass
+            groupmawe[group.id] = (
+                buy - paylaon) + self.exchange - decimal.Decimal(self.totallSellback[group.id]) + oldass
         return groupmawe
 
     @property
@@ -330,9 +331,9 @@ class LocalCompany(models.Model):
             oldass = 0
             for laon in self.oldacc_compnay.filter(group=group.id):
                 oldass = oldass + (laon.loan - laon.income)
-            totallOlds[group.id]=  str(float('{:.2f}'.format(oldass)))
+            totallOlds[group.id] = str(float('{:.2f}'.format(oldass)))
         return totallOlds
-        
+
     @property
     def totallPay(self):
         groups = Group.objects.all()
@@ -341,7 +342,7 @@ class LocalCompany(models.Model):
             totalls = 0
             for pay in self.payment_compnay.filter(group=group.id):
                 totalls = totalls + pay.bank.income
-            totallPays[group.id]=  str(float('{:.2f}'.format(totalls)))
+            totallPays[group.id] = str(float('{:.2f}'.format(totalls)))
         return totallPays
 
     @property
@@ -352,16 +353,19 @@ class LocalCompany(models.Model):
             totalls = 0
             for totall in self.sell_compnay.filter(group=group.id):
                 totalls = totalls + totall.totallint
-            totallSells[group.id] =  str(float('{:.2f}'.format(totalls)))
+            totallSells[group.id] = str(float('{:.2f}'.format(totalls)))
         return totallSells
-
 
     @property
     def totallSellback(self):
-        totalls = 0
-        for totall in self.sell_compnay.all():
-            totalls = totalls + totall.totalback
-        return float('{:.2f}'.format(totalls))
+        groups = Group.objects.all()
+        totallSells = {}
+        for group in groups:
+            totalls = 0
+            for totall in self.sell_compnay.filter(group=group.id):
+                totalls = totalls + totall.totalback
+            totallSells[group.id] = str(float('{:.2f}'.format(totalls)))
+        return totallSells
 
     class Meta:
         verbose_name_plural = "کڕیارەکان"
@@ -428,10 +432,6 @@ class Item(models.Model):
         return krin
 
     @property
-    def wightAll(self):
-        return self.wight * self.quantity
-
-    @property
     def finalprice(self):
         price = self.price + (self.price * self.addprice)
         return str(float('{:.2f}'.format(price)))
@@ -493,14 +493,15 @@ class Sell(models.Model):
 
     def __str__(self):
         return "wasl " + str(self.id)
-    
+
     @property
     def totallBar(self):
         total = 0
         if len(self.sell_detail.all()):
-            total = self.sell_detail.aggregate(Sum('quantity'))['quantity__sum']
+            total = self.sell_detail.aggregate(Sum('quantity'))[
+                'quantity__sum']
         return str(total)
-    
+
     @property
     def totall(self):
         total = 0
@@ -543,6 +544,9 @@ class SellDetail(models.Model):
         verbose_name="رێکەوت", auto_now_add=True, blank=True)
     status = models.BooleanField(default=False)
 
+    def allwight(self):
+        return self.item.wight * self.quantity
+    
     def total(self):
         return self.price * self.quantity
 

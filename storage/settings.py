@@ -167,11 +167,11 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
 
-# CORS_ORIGIN_ALLOW_ALL = True
+CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOWED_ORIGINS = [
     'https://zender-app.herokuapp.com',
-    # "http://localhost:8000",
-    # "http://127.0.0.1:8000",
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
 ]
 
 CORS_URLS_REGEX = r'^/api/.*$'
