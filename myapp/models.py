@@ -544,6 +544,12 @@ class SellDetail(models.Model):
         verbose_name="رێکەوت", auto_now_add=True, blank=True)
     status = models.BooleanField(default=False)
 
+    def item_image(self):
+        if self.item.image:
+            return self.item.image.url
+        else:
+            return 'null'
+    
     def allwight(self):
         return self.item.wight * self.quantity
     

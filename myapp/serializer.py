@@ -55,7 +55,7 @@ class OldAccSerializer(serializers.ModelSerializer):
 class SellXDetailSerializer(serializers.ModelSerializer):
     item_name = serializers.ReadOnlyField(source='item.name')
     item_wight = serializers.ReadOnlyField(source='item.wight')
-    # item_quantity = serializers.ReadOnlyField(source='item.quantity')
+    # item_image = serializers.ReadOnlyField(source='item.image') 
     item_code = serializers.ReadOnlyField(source='item.barcode')
     # item_bag = serializers.ReadOnlyField(source='item.bag')
     item_group = serializers.ReadOnlyField(source='item.group.id')
@@ -66,7 +66,7 @@ class SellXDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = SellDetail
         fields = ['id', 'item', 'item_name', 'item_code', 'datetime', 'mawe', 'finalprice', 'total', 'item_group', 'item_price',
-                  'quantity', 'price', 'sell', 'date', 'total', 'status', 'item_group_name', 'item_wight', 'allwight']
+                  'quantity', 'price', 'sell', 'date', 'total', 'status', 'item_group_name', 'item_wight', 'allwight','item_image']
 
 
 class LocalSerializer(serializers.ModelSerializer):
@@ -77,6 +77,12 @@ class LocalSerializer(serializers.ModelSerializer):
 
 
 class ReSellSerializer(serializers.ModelSerializer):
+    group  = serializers.ReadOnlyField(source='sell.group.id')
+    group_name  = serializers.ReadOnlyField(source='sell.group.name')
+    local = serializers.ReadOnlyField(source='sell.local.id')
+    local_name  = serializers.ReadOnlyField(source='sell.local.name')
+    item_name  = serializers.ReadOnlyField(source='item.name')
+
     class Meta:
         model = ReSell
         fields = '__all__'
@@ -160,6 +166,7 @@ class PaySerializer(serializers.ModelSerializer):
     local_name = serializers.ReadOnlyField(source='local.name')
     local_code = serializers.ReadOnlyField(source='local.code')
     local_region = serializers.ReadOnlyField(source='local.region.name')
+    local_phone = serializers.ReadOnlyField(source='local.phone')
     group_name = serializers.ReadOnlyField(source='group.name')
     bank_loan = serializers.ReadOnlyField(source='bank.loan')
     bank_income = serializers.ReadOnlyField(source='bank.income')
@@ -168,7 +175,7 @@ class PaySerializer(serializers.ModelSerializer):
     class Meta:
         model = Payment
         fields = ['id', 'date', 'datetime', 'local', 'group', 'bank', 'local_name',
-                  'group_name', 'bank_loan', 'bank_income', 'payment_bank', 'local_code', 'local_region']
+                  'group_name', 'bank_loan', 'bank_income', 'payment_bank', 'local_code', 'local_region', 'local_phone']
 
 
 class PayLoanSerializer(serializers.ModelSerializer):
