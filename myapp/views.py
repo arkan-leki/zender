@@ -1,11 +1,8 @@
-from django import forms
-from django.http.response import HttpResponseRedirect
+from django.http.response import JsonResponse
 from django.shortcuts import redirect, render
-from django_filters.rest_framework import filters
 from rest_framework import viewsets
 from .models import *
 from .serializer import *
-from django.forms import ModelForm
 # Create your views here.
 
 
@@ -72,6 +69,8 @@ class SellDetailViewSet(viewsets.ModelViewSet):
 class SellXDetailViewSet(viewsets.ModelViewSet):
     queryset = SellDetail.objects.all().order_by('-datetime')
     serializer_class = SellXDetailSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['item']
 
 
 class SellViewSet(viewsets.ModelViewSet):
@@ -156,6 +155,15 @@ class PaySalaryViewSet(viewsets.ModelViewSet):
     queryset = Epmploye.objects.all()
     serializer_class = PaySalarySerializer
 
+
+class OrderedXViewSet(viewsets.ModelViewSet):
+    queryset = OrderDetail.objects.all()
+    serializer_class = OrderedXSerializer
+    
+def mycompany(request):
+    response_data = {}
+    response_data['company'] = 'زەندەر'
+    return JsonResponse(response_data)
 
 # class LocalXSerializer(serializers.ModelSerializer):
 #     region = serializers.ReadOnlyField(source='region.name')

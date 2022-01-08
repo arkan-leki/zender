@@ -1,6 +1,5 @@
-from datetime import datetime
+import datetime
 import decimal
-import re
 from django.db import models
 from django.db.models.aggregates import Avg, Sum
 from django.db.models.expressions import F
@@ -109,8 +108,9 @@ class Group(models.Model):
 
     @property
     def totallSell(self):
+        # today = datetime.date.today()
         totalls = 0
-        for totall in self.sell_group.all():
+        for totall in self.sell_group.filter(date__month=datetime.date.today().month):
             totalls = totalls + (totall.totallint - totall.totalback)
         return str(float('{:.2f}'.format(totalls)))
 
@@ -549,10 +549,10 @@ class SellDetail(models.Model):
             return self.item.image.url
         else:
             return 'null'
-    
+
     def allwight(self):
         return self.item.wight * self.quantity
-    
+
     def total(self):
         return self.price * self.quantity
 

@@ -27,7 +27,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-*1vo4s8m%btn2p!xd@^xh)#yep)zjsr%s6q4#ah0h4rlmoy)l2'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -158,7 +158,7 @@ REST_FRAMEWORK = {
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'ar-us'
 
 TIME_ZONE = 'Asia/Baghdad'
 
@@ -172,30 +172,30 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATIC_URL = '/static/'
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'build/static'),]
+# STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+# STATIC_URL = '/static/'
+# STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# STATICFILES_DIRS = [os.path.join(BASE_DIR, 'build/static'),]
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
+
+WSGI_APPLICATION = 'storage.wsgi_windows.application'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-MEDIA_URL = '/media/'
+MEDIA_URL = 'http://localhost/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
-
 CORS_ORIGIN_ALLOW_ALL = True
-CORS_ALLOWED_ORIGINS = [
-    'https://zender-app.herokuapp.com',
-    "http://localhost:8000",
-    "http://127.0.0.1:8000",
-]
+# CORS_ALLOWED_ORIGINS = [
+#     'https://zender-app.herokuapp.com',
+#     "http://localhost:8000",
+#     "http://127.0.0.1:8000",
+# ]
 
-CORS_URLS_REGEX = r'^/api/.*$'
-# CORS_URLS_REGEX = r'^/.*$'
+CORS_URLS_REGEX = r'^/.*$'
 
 CORS_ALLOW_METHODS = [
     'DELETE',
@@ -218,7 +218,9 @@ CORS_ALLOW_HEADERS = [
     'x-requested-with',
 ]
 
-USE_S3 = True
+# django_heroku.settings(locals())
+
+USE_S3 = False
 
 if USE_S3:
     # aws settings
@@ -240,11 +242,12 @@ if USE_S3:
     MEDIA_URL = f'https://{AWS_S3_CUSTOM_DOMAIN}/{PUBLIC_MEDIA_LOCATION}/'
     DEFAULT_FILE_STORAGE = 'storage.storage_backends.PublicMediaStorage'
 else:
-    STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
+    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
     STATIC_URL = '/static/'
-    MEDIA_URL = '/media/'
-    STATIC_ROOT = os.path.join(BASE_DIR, 'static_root')
-    MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+    STATICFILES_DIRS = [os.path.join(BASE_DIR, 'build/static'),]
+    # MEDIA_URL = '/media/'
+    # MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 django_heroku.settings(locals())
 

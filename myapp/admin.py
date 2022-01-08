@@ -23,9 +23,11 @@ class ItemAdmin(admin.ModelAdmin):
                     'finalprice',
                     # 'stock',
                     'mawe',
-                    # 'deleted'
+                    # 'deleted',
+                    'quantity'
                     ]
     # list_editable = ['group', 'price', 'addprice', 'stock', 'deleted']
+    # list_editable = ['quantity']
     list_filter = ['group', 'deleted']
     list_max_show_all = False
 
