@@ -18,7 +18,7 @@ class LocalViewSet(viewsets.ModelViewSet):
 
 
 class LocalXViewSet(viewsets.ModelViewSet):
-    queryset = LocalCompany.objects.all().order_by('name')
+    queryset = LocalCompany.objects.all().order_by('id')
     serializer_class = LocalXSerializer
 
 

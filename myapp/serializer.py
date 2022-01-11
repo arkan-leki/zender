@@ -60,13 +60,13 @@ class SellXDetailSerializer(serializers.ModelSerializer):
     # item_bag = serializers.ReadOnlyField(source='item.bag')
     item_group = serializers.ReadOnlyField(source='item.group.id')
     item_price = serializers.ReadOnlyField(source='item.price')
-    # sell = serializers.ReadOnlyField(source='sell.id')
+    sell_local = serializers.ReadOnlyField(source='sell.local.name')
     item_group_name = serializers.ReadOnlyField(source='item.group.name')
 
     class Meta:
         model = SellDetail
         fields = ['id', 'item', 'item_name', 'item_code', 'datetime', 'mawe', 'finalprice', 'total', 'item_group', 'item_price',
-                  'quantity', 'price', 'sell', 'date', 'total', 'status', 'item_group_name', 'item_wight', 'allwight','item_image']
+                  'quantity', 'price', 'sell', 'sell_local', 'date', 'total', 'status', 'item_group_name', 'item_wight', 'allwight','item_image']
 
 
 class LocalSerializer(serializers.ModelSerializer):

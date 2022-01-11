@@ -27,7 +27,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-*1vo4s8m%btn2p!xd@^xh)#yep)zjsr%s6q4#ah0h4rlmoy)l2'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -103,7 +103,7 @@ DATABASES = {
 
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
 
-        'NAME': 'zender',
+        'NAME': 'zenderH',
 
         'USER': 'postgres',
 
