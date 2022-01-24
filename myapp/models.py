@@ -331,7 +331,29 @@ class LocalCompany(models.Model):
             oldass = 0
             for laon in self.oldacc_compnay.filter(group=group.id):
                 oldass = oldass + (laon.loan - laon.income)
-            totallOlds[group.id] = str(float('{:.2f}'.format(oldass)))
+            totallOlds[group.id] = decimal.Decimal(oldass)
+        return totallOlds
+
+    @property
+    def totallOldloan(self):
+        groups = Group.objects.all()
+        totallOlds = {}
+        for group in groups:
+            oldass = 0
+            for laon in self.oldacc_compnay.filter(group=group.id):
+                oldass = oldass + (laon.loan)
+            totallOlds[group.id] = decimal.Decimal(oldass)
+        return totallOlds
+
+    @property
+    def totallOldincome(self):
+        groups = Group.objects.all()
+        totallOlds = {}
+        for group in groups:
+            oldass = 0
+            for laon in self.oldacc_compnay.filter(group=group.id):
+                oldass = oldass + (laon.income)
+            totallOlds[group.id] = decimal.Decimal(oldass)
         return totallOlds
 
     @property
@@ -342,7 +364,7 @@ class LocalCompany(models.Model):
             totalls = 0
             for pay in self.payment_compnay.filter(group=group.id):
                 totalls = totalls + pay.bank.income
-            totallPays[group.id] = str(float('{:.2f}'.format(totalls)))
+            totallPays[group.id] = decimal.Decimal(totalls)
         return totallPays
 
     @property
@@ -353,7 +375,7 @@ class LocalCompany(models.Model):
             totalls = 0
             for totall in self.sell_compnay.filter(group=group.id):
                 totalls = totalls + totall.totallint
-            totallSells[group.id] = str(float('{:.2f}'.format(totalls)))
+            totallSells[group.id] = decimal.Decimal(totalls)
         return totallSells
 
     @property
@@ -364,7 +386,7 @@ class LocalCompany(models.Model):
             totalls = 0
             for totall in self.sell_compnay.filter(group=group.id):
                 totalls = totalls + totall.totalback
-            totallSells[group.id] = str(float('{:.2f}'.format(totalls)))
+            totallSells[group.id] = decimal.Decimal(totalls)
         return totallSells
 
     class Meta:
@@ -594,6 +616,14 @@ class Order(models.Model):
         if len(self.order_detail.all()):
             total = float('{:.2f}'.format(self.order_detail.annotate(
                 answer=F('price') * F('quantity')).aggregate(total=Sum('answer'))['total']))
+        return str(total)
+
+    @property
+    def totallQ(self):
+        total = 0
+        if len(self.order_detail.all()):
+            total = float('{:.2f}'.format(self.order_detail.annotate(
+                answer= F('quantity')).aggregate(total=Sum('answer'))['total']))
         return str(total)
 
     @property

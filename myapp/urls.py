@@ -33,6 +33,9 @@ router.register(r'price', PriceViewSet)
 router.register(r'employe', EmployeViewSet)
 router.register(r'paysaary', PaySalaryViewSet)
 router.register(r'oldacc', OldAccrViewSet)
+router.register(r'reqOrder', RequestOrderViewSet)
+router.register(r'reqDetail', RequestDetailViewSet)
+
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.

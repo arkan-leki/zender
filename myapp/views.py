@@ -1,3 +1,4 @@
+from urllib.request import Request
 from django.http.response import JsonResponse
 from django.shortcuts import redirect, render
 from rest_framework import viewsets
@@ -28,15 +29,18 @@ class TraderViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['group']
 
+
 class TraderXViewSet(viewsets.ModelViewSet):
     queryset = TradeCompany.objects.all()
     serializer_class = TraderXSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['group']
 
+
 class CatViewSet(viewsets.ModelViewSet):
     queryset = Cat.objects.all()
     serializer_class = CatSerializer
+
 
 class ItemViewSet(viewsets.ModelViewSet):
     queryset = Item.objects.all().order_by('id')
@@ -48,6 +52,7 @@ class ItemViewSet(viewsets.ModelViewSet):
 class GroupViewSet(viewsets.ModelViewSet):
     queryset = Group.objects.all().order_by('id')
     serializer_class = GroupSerializer
+
 
 class GroupXViewSet(viewsets.ModelViewSet):
     queryset = Group.objects.all().order_by('id')
@@ -84,7 +89,7 @@ class SellXViewSet(viewsets.ModelViewSet):
     queryset = Sell.objects.order_by('-datetime')
     serializer_class = SellXSerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['group','local_id','status']
+    filterset_fields = ['group', 'local_id', 'status']
 
 
 class OrderViewSet(viewsets.ModelViewSet):
@@ -93,11 +98,13 @@ class OrderViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['group']
 
+
 class OldAccrViewSet(viewsets.ModelViewSet):
     queryset = OldAcc.objects.all()
-    serializer_class =OldAccSerializer
+    serializer_class = OldAccSerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['group','local']
+    filterset_fields = ['group', 'local']
+
 
 class OrderXViewSet(viewsets.ModelViewSet):
     queryset = Order.objects.all().order_by('-datetime')
@@ -115,9 +122,20 @@ class RegionViewSet(viewsets.ModelViewSet):
     queryset = Region.objects.all().order_by('id')
     serializer_class = RegionSerializer
 
+
 class VendorViewSet(viewsets.ModelViewSet):
     queryset = Vendor.objects.all()
     serializer_class = VendorSerializer
+
+
+class RequestOrderViewSet(viewsets.ModelViewSet):
+    queryset = RequestOrder.objects.all()
+    serializer_class = RequestOrderSerializer
+
+class RequestDetailViewSet(viewsets.ModelViewSet):
+    queryset = RequestDetail.objects.all()
+    serializer_class = RequestDetailSerializer
+
 
 class BankViewSet(viewsets.ModelViewSet):
     queryset = Bank.objects.all().order_by('-datetime')
@@ -125,31 +143,38 @@ class BankViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['group']
 
+
 class PayViewSet(viewsets.ModelViewSet):
     queryset = Payment.objects.all().order_by('-datetime')
     serializer_class = PaySerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['local']
 
+
 class BuyViewSet(viewsets.ModelViewSet):
     queryset = buy.objects.all()
     serializer_class = BuySerializer
+
 
 class PayLoanViewSet(viewsets.ModelViewSet):
     queryset = Payloan.objects.all()
     serializer_class = PayLoanSerializer
 
+
 class ReSellViewSet(viewsets.ModelViewSet):
     queryset = ReSell.objects.all()
     serializer_class = ReSellSerializer
+
 
 class PriceViewSet(viewsets.ModelViewSet):
     queryset = Pricing.objects.all()
     serializer_class = PriceSerializer
 
+
 class EmployeViewSet(viewsets.ModelViewSet):
     queryset = Epmploye.objects.all()
     serializer_class = PriceSerializer
+
 
 class PaySalaryViewSet(viewsets.ModelViewSet):
     queryset = Epmploye.objects.all()
@@ -159,7 +184,8 @@ class PaySalaryViewSet(viewsets.ModelViewSet):
 class OrderedXViewSet(viewsets.ModelViewSet):
     queryset = OrderDetail.objects.all()
     serializer_class = OrderedXSerializer
-    
+
+
 def mycompany(request):
     response_data = {}
     response_data['company'] = 'زەندەر'

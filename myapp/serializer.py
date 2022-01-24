@@ -133,7 +133,10 @@ class RegionSerializer(serializers.ModelSerializer):
 
 
 class BuySerializer(serializers.ModelSerializer):
-
+    group_name = serializers.ReadOnlyField(source='group.name')
+    bank_loan = serializers.ReadOnlyField(source='bank.loan')
+    bank_income = serializers.ReadOnlyField(source='bank.income')
+    
     class Meta:
         model = buy
         fields = '__all__'
@@ -212,6 +215,17 @@ class OrderedSerializer(serializers.ModelSerializer):
         model = OrderDetail
         fields = '__all__'
 
+class RequestOrderSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = RequestOrder
+        fields = '__all__'
+
+class RequestDetailSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = RequestDetail
+        fields = '__all__'
 
 class OrderedXSerializer(serializers.ModelSerializer):
     item_name = serializers.ReadOnlyField(source='item.name')
@@ -238,7 +252,7 @@ class OrderXSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = ['id', 'group', 'trader', 'code',
-                  'discount', 'date', 'order_detail', 'group_name', 'trader_name', 'totallint', 'totall', 'trader_mawe', 'datetime']
+                  'discount', 'date', 'order_detail', 'group_name', 'trader_name', 'totallQ', 'totall', 'trader_mawe', 'datetime']
 
 
 class ItemXSerializer(serializers.ModelSerializer):
@@ -281,7 +295,7 @@ class LocalXSerializer(serializers.ModelSerializer):
     class Meta:
         model = LocalCompany
         fields = ['id', 'name', 'phone', 'code', 'region', 'region_name', 'location', 'image', 'add_date', 'status', 'zip_code', 'state', 'country',
-                  'owner_name', 'totallSell', 'mawe', 'totallPay', 'totallOld', 'exchange', 'totallSellback', 'date']
+                  'owner_name', 'totallSell', 'mawe', 'totallPay', 'totallOld', 'totallOldloan', 'totallOldincome', 'exchange', 'totallSellback', 'date']
         # fields = ['id', 'name', 'phone', 'code', 'region', 'location', 'image', 'add_date', 'status', 'zip_code', 'state', 'country',
         #           'owner_name', 'totallSell', 'mawe', 'totallPay', 'exchange', 'totallSellback', 'attempts', 'date', 'payment_compnay', 'oldacc_compnay']
 
