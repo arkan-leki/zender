@@ -202,6 +202,15 @@ class Vendor(models.Model):
     add_date = models.DateTimeField(verbose_name='رێکەوت', auto_now=True)
     status = models.BooleanField(default=False)
 
+    @property
+    def totallSell(self):
+        totallSells = 0
+        if self.sell_vendor.all:
+            for totall in self.sell_vendor.filter(date__month=datetime.date.today().month):
+                totallSells = totallSells + totall.totallint
+            totallSells = decimal.Decimal(totallSells)
+        return totallSells
+
     def __str__(self):
         return self.name
 
@@ -242,7 +251,7 @@ class TradeCompany(models.Model):
         buy = 0
         if(self.loan_compnay.all()):
             for pay in self.loan_compnay.all():
-                paylaon = paylaon + pay.bank.loan
+                paylaon = paylaon + (pay.bank.loan - pay.bank.income)
 
         if(self.order_compnay.all()):
             for laon in self.order_compnay.all():
@@ -254,7 +263,7 @@ class TradeCompany(models.Model):
     def totallLoan(self):
         totalls = 0
         for pay in self.loan_compnay.all():
-            totalls = totalls + pay.bank.loan
+            totalls = totalls + (pay.bank.loan - pay.bank.income)
         return str(float('{:.2f}'.format(totalls)))
 
     @property
@@ -500,7 +509,7 @@ class Pricing(models.Model):
 
 class Sell(models.Model):
     vendor = models.ForeignKey("Vendor", verbose_name="فرۆشیار",
-                               on_delete=models.CASCADE, related_name="sell_group")
+                               on_delete=models.CASCADE, related_name="sell_vendor")
     group = models.ForeignKey("Group", verbose_name="ناوی بنکە",
                               on_delete=models.CASCADE, related_name="sell_group")
     local = models.ForeignKey("LocalCompany", verbose_name="کڕیار",
@@ -623,7 +632,7 @@ class Order(models.Model):
         total = 0
         if len(self.order_detail.all()):
             total = float('{:.2f}'.format(self.order_detail.annotate(
-                answer= F('quantity')).aggregate(total=Sum('answer'))['total']))
+                answer=F('quantity')).aggregate(total=Sum('answer'))['total']))
         return str(total)
 
     @property

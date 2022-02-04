@@ -23,6 +23,7 @@ router.register(r'orders', OrderXViewSet)
 router.register(r'ordered', OrderedViewSet)
 router.register(r'ordereds', OrderedXViewSet)
 router.register(r'vendors', VendorViewSet)
+router.register(r'vendorz', VendorXViewSet)
 router.register(r'bank', BankViewSet)
 router.register(r'payment', PayViewSet)
 router.register(r'payloan', PayLoanViewSet)
@@ -33,8 +34,6 @@ router.register(r'price', PriceViewSet)
 router.register(r'employe', EmployeViewSet)
 router.register(r'paysaary', PaySalaryViewSet)
 router.register(r'oldacc', OldAccrViewSet)
-router.register(r'reqOrder', RequestOrderViewSet)
-router.register(r'reqDetail', RequestDetailViewSet)
 
 
 # Wire up our API using automatic URL routing.

@@ -102,6 +102,7 @@ class EmployeSerializer(serializers.ModelSerializer):
 
 class SellXSerializer(serializers.ModelSerializer):
     local_name = serializers.ReadOnlyField(source='local.name')
+    owner_name = serializers.ReadOnlyField(source='local.owner_name')
     local_code = serializers.ReadOnlyField(source='local.code')
     local_phone = serializers.ReadOnlyField(source='local.phone')
     local_mawe = serializers.ReadOnlyField(source='local.mawe')
@@ -114,7 +115,7 @@ class SellXSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Sell
-        fields = ['id', 'local', 'local_name', 'local_code', 'sell_detail', 'date', 'datetime', 'totall', 'totallint', 'totalback', 'status',
+        fields = ['id', 'local', 'local_name', 'local_code', 'owner_name', 'sell_detail', 'date', 'datetime', 'totall', 'totallint', 'totalback', 'status',
                   'discount', 'group_name', 'group', 'vendor', 'vendor_name', 'group_phone', 'vendor_phone', 'local_phone', 'local_mawe', 'local_region', 'totallBar']
 
 class GroupSerializer(serializers.ModelSerializer):
@@ -155,6 +156,11 @@ class VendorSerializer(serializers.ModelSerializer):
         model = Vendor
         fields = '__all__'
 
+class VendorXSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Vendor
+        fields = ['id', 'name', 'totallSell']
 
 class BankSerializer(serializers.ModelSerializer):
     group_name = serializers.ReadOnlyField(source='group.name')
@@ -215,17 +221,6 @@ class OrderedSerializer(serializers.ModelSerializer):
         model = OrderDetail
         fields = '__all__'
 
-class RequestOrderSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = RequestOrder
-        fields = '__all__'
-
-class RequestDetailSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = RequestDetail
-        fields = '__all__'
 
 class OrderedXSerializer(serializers.ModelSerializer):
     item_name = serializers.ReadOnlyField(source='item.name')
@@ -252,7 +247,7 @@ class OrderXSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = ['id', 'group', 'trader', 'code',
-                  'discount', 'date', 'order_detail', 'group_name', 'trader_name', 'totallQ', 'totall', 'trader_mawe', 'datetime']
+                  'discount', 'date', 'order_detail', 'group_name', 'trader_name', 'totallint', 'totall', 'trader_mawe', 'datetime']
 
 
 class ItemXSerializer(serializers.ModelSerializer):
