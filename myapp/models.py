@@ -1,5 +1,6 @@
 import datetime
 import decimal
+from tokenize import group
 from django.db import models
 from django.db.models.aggregates import Avg, Sum
 from django.db.models.expressions import F
@@ -11,7 +12,7 @@ from django.dispatch import receiver
 from rest_framework.authtoken.models import Token
 from django_resized import ResizedImageField
 from django.conf import settings
-
+from dateutil.relativedelta import relativedelta
 # Create your models here.
 
 
@@ -95,10 +96,30 @@ class Group(models.Model):
                               upload_to='images/', blank=True, null=True, verbose_name='وێنه‌')
     add_date = models.DateTimeField(verbose_name='رێکەوت', auto_now=True)
     status = models.BooleanField(default=False)
-
+    
+    @property
+    def paymentByMonth(self):
+        if self.payment_group.all:
+            grouptotallSells = {}
+            MongtotallSells = {}
+            for i in range(0, 10):
+                paylaon = 0
+                date = (datetime.date.today() +
+                    relativedelta(months=-i))
+                for pay in self.payment_group.filter(date__year=date.year, date__month=date.month):
+                    paylaon = paylaon + (pay.bank.income - pay.bank.loan)
+                    paylaon = decimal.Decimal(paylaon)
+                    MongtotallSells[date.strftime('%Y-%m')] = paylaon
+            grouptotallSells = MongtotallSells
+        return grouptotallSells
+    
     @property
     def items(self):
-        items = self.item_group.count
+        items = 0
+        if self.item_group.count:
+            for totall in self.item_group.filter(deleted=False):
+                items = items + (totall.mawe * totall.price)
+            return items
         return items
 
     @property
@@ -107,13 +128,22 @@ class Group(models.Model):
         return items
 
     @property
-    def totallSell(self):
+    def totallSellMonthly(self):
         # today = datetime.date.today()
         totalls = 0
-        for totall in self.sell_group.filter(date__month=datetime.date.today().month):
+        for totall in self.sell_group.filter(date__month=datetime.date.today().month, status=True):
             totalls = totalls + (totall.totallint - totall.totalback)
         return str(float('{:.2f}'.format(totalls)))
 
+    @property
+    def totallSell(self):
+        # today = datetime.date.today()
+        totalls = 0
+        for totall in self.sell_group.filter(status=True):
+            totalls = totalls + (totall.totallint - totall.totalback)
+        return str(float('{:.2f}'.format(totalls)))
+    
+    
     @property
     def totallOrder(self):
         totalls = 0
@@ -122,19 +152,50 @@ class Group(models.Model):
         return str(float('{:.2f}'.format(totalls)))
 
     @property
+    def paymentsMonthly(self):
+        if self.payment_group.count:
+            paylaon = 0
+            for pay in self.payment_group.filter(date__month=datetime.date.today().month):
+                paylaon = paylaon + (pay.bank.income - pay.bank.loan)
+            return paylaon
+
+    @property
     def payments(self):
-        items = self.payment_group.count
-        return items
+        if self.payment_group.count:
+            paylaon = 0
+            for pay in self.payment_group.all():
+                paylaon = paylaon + (pay.bank.income - pay.bank.loan)
+            return paylaon
+
+    @property
+    def oldAccs(self):
+        if self.oldacc_group.count:
+            paylaon = 0
+            for laon in self.oldacc_group.all():
+                paylaon = paylaon + (laon.loan - laon.income)
+            return paylaon
+    #
 
     @property
     def loans(self):
-        items = self.loan_group.count
-        return items
+        if self.loan_group.count:
+            paylaon = 0
+            for laon in self.loan_group.all():
+                paylaon = paylaon + (laon.bank.income - laon.bank.loan)
+            return paylaon
 
     @property
     def buys(self):
         items = self.buy_group.count
         return items
+
+    @property
+    def totallBuy(self):
+        totalls = 0
+        if self.order_group.count():
+            for totall in self.order_group.all():
+                totalls = totalls + totall.totallint
+        return totalls
 
     @property
     def banks(self):
@@ -204,12 +265,37 @@ class Vendor(models.Model):
 
     @property
     def totallSell(self):
-        totallSells = 0
+        groups = Group.objects.all()
+
         if self.sell_vendor.all:
-            for totall in self.sell_vendor.filter(date__month=datetime.date.today().month):
-                totallSells = totallSells + totall.totallint
-            totallSells = decimal.Decimal(totallSells)
-        return totallSells
+            grouptotallSells = {}
+            for group in groups:
+                MongtotallSells = {}
+                for i in range(0, 10):
+                    totallSells = 0
+                    date = (datetime.date.today() +
+                            relativedelta(months=-i))
+                    for totall in self.sell_vendor.filter(date__year=date.year, date__month=date.month, group=group.id):
+                        totallSells = totallSells + \
+                            (totall.totallint - totall.totalback)
+                        totallSells = decimal.Decimal(totallSells)
+                        MongtotallSells[date.strftime('%Y-%m')] = totallSells
+                grouptotallSells[group.name] = MongtotallSells
+        return grouptotallSells
+
+    @property
+    def totallSellGroup(self):
+        groups = Group.objects.all()
+        grouptotallSells = {}
+        for group in groups:
+            if self.sell_vendor.all:
+                totallSells = 0
+                for totall in self.sell_vendor.filter(date__month=datetime.date.today().month, group=group.id):
+                    totallSells = totallSells + \
+                        (totall.totallint - totall.totalback)
+                    totallSells = decimal.Decimal(totallSells)
+                grouptotallSells[group.id] = totallSells
+        return grouptotallSells
 
     def __str__(self):
         return self.name
@@ -330,6 +416,31 @@ class LocalCompany(models.Model):
 
             groupmawe[group.id] = (
                 buy - paylaon) + self.exchange - decimal.Decimal(self.totallSellback[group.id]) + oldass
+        return groupmawe
+    
+    @property
+    def alarm(self):
+        groups = Group.objects.all()
+        groupmawe = {}
+        for group in groups:
+            paylaon = 0
+            buy = 0
+            oldass = 0
+            if(self.payment_compnay.filter(group=group.id)):
+                for pay in self.payment_compnay.filter(group=group.id):
+                    paylaon = paylaon + (pay.bank.income - pay.bank.loan)
+
+            if(self.sell_compnay.filter(group=group.id, status=True)):
+                for laon in self.sell_compnay.filter(date__month=datetime.date.today().month, group=group.id, status=True):
+                    buy = buy + laon.totallint
+
+            if(self.oldacc_compnay.filter(group=group.id)):
+                for laon in self.oldacc_compnay.filter(group=group.id):
+                    oldass = oldass + (laon.loan - laon.income)
+            if ( (buy - paylaon) + self.exchange - decimal.Decimal(self.totallSellback[group.id]) + oldass > 0.0 ):
+                groupmawe[group.id] = (
+                    buy - paylaon) + self.exchange - decimal.Decimal(self.totallSellback[group.id]) + oldass
+            else : groupmawe[group.id] = 0.0
         return groupmawe
 
     @property
@@ -678,7 +789,7 @@ class Payment(models.Model):
         verbose_name="بەروار", auto_now_add=True, blank=True)
     datetime = models.DateTimeField(
         verbose_name="رێکەوت", auto_now_add=True, blank=True)
-
+    
     class Meta:
         verbose_name_plural = "پارەدان"
 
@@ -772,7 +883,7 @@ class ReSell(models.Model):
         return self.price * self.quantity
 
     def __str__(self):
-        return
+        return str(self.pk)
 
     def __unicode__(self):
         return
@@ -817,7 +928,8 @@ class Dliver(models.Model):
 
 class Transport(models.Model):
     dliver = models.ForeignKey(Dliver, on_delete=models.CASCADE)
-    request = models.ForeignKey(Sell, on_delete=models.CASCADE)
+    # request = models.ForeignKey(Sell, on_delete=models.CASCADE)
+    request = models.ManyToManyField('Sell', related_name="bar_sell")
     start_date = models.DateTimeField(verbose_name='start date')
     end_date = models.DateTimeField(verbose_name='end date')
     status = models.BooleanField(default=False)

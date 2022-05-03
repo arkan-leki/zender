@@ -34,6 +34,8 @@ router.register(r'price', PriceViewSet)
 router.register(r'employe', EmployeViewSet)
 router.register(r'paysaary', PaySalaryViewSet)
 router.register(r'oldacc', OldAccrViewSet)
+router.register(r'transports', TransportsViewSet)
+router.register(r'transportz', TransportsXViewSet)
 
 
 # Wire up our API using automatic URL routing.

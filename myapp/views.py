@@ -111,6 +111,15 @@ class OrderedViewSet(viewsets.ModelViewSet):
     serializer_class = OrderedSerializer
 
 
+class TransportsViewSet(viewsets.ModelViewSet):
+    queryset = Transport.objects.all().order_by('-id')
+    serializer_class = TransportsSerializer
+
+class TransportsXViewSet(viewsets.ModelViewSet):
+    queryset = Transport.objects.all().order_by('-id')
+    serializer_class = TransportsXSerializer
+
+
 class RegionViewSet(viewsets.ModelViewSet):
     queryset = Region.objects.all().order_by('id')
     serializer_class = RegionSerializer
@@ -153,7 +162,7 @@ class PriceViewSet(viewsets.ModelViewSet):
 
 class EmployeViewSet(viewsets.ModelViewSet):
     queryset = Epmploye.objects.all()
-    serializer_class = PriceSerializer
+    serializer_class = EmployeSerializer
 
 class PaySalaryViewSet(viewsets.ModelViewSet):
     queryset = Epmploye.objects.all()

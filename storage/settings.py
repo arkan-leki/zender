@@ -103,7 +103,9 @@ DATABASES = {
 
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
 
-        'NAME': 'zender',
+        'NAME': 'Hawler',
+        # 'NAME': 'zanderAlan',
+        # 'NAME': 'zenderVazir',
 
         'USER': 'postgres',
 
@@ -114,6 +116,21 @@ DATABASES = {
         'PORT': '5432',
 
     }
+    # 'default': {
+
+    #     'ENGINE': 'django.db.backends.postgresql_psycopg2',
+
+    #     'NAME': 'wazir',
+
+    #     'USER': 'arkan',
+
+    #     'PASSWORD': 'arkan1997',
+
+    #     'HOST': 'postgresql-74576-0.cloudclusters.net',
+
+    #     'PORT': '16104',
+
+    # }
 
 }
 
@@ -247,7 +264,7 @@ else:
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
     STATICFILES_DIRS = [os.path.join(BASE_DIR, 'build/static'),]
     # MEDIA_URL = '/media/'
-    MEDIA_ROOT = 'D:\\images\\'
+    MEDIA_ROOT = 'D:\\media\\'
 
 django_heroku.settings(locals())
 

@@ -14,7 +14,6 @@ class GroupAdmin(admin.ModelAdmin):
 
 admin.site.register(Group, GroupAdmin)
 
-
 class ItemAdmin(admin.ModelAdmin):
     model = Item
     list_display = ['id', 'barcode', 'group', 'name',
@@ -95,11 +94,11 @@ class SelldetailAdmin(admin.TabularInline):
 
 class SellAdmin(admin.ModelAdmin):
     model = Sell
-    list_display = ['vendor', 'group', 'local',
-                    'discount', 'date', 'status']
-    list_editable = ['status']
-    list_filter = ['group', 'date']
-    inlines = [SelldetailAdmin]
+    # list_display = ['vendor', 'group', 'local',
+    #                 'discount', 'date', 'status']
+    # list_editable = ['status']
+    # list_filter = ['group', 'date']
+    # inlines = [SelldetailAdmin]
 
 
 admin.site.register(Sell, SellAdmin)
@@ -111,7 +110,8 @@ class OrderdetailAdmin(admin.TabularInline):
 
 class OrderAdmin(admin.ModelAdmin):
     model = Order
-    inlines = [OrderdetailAdmin]
+    list_display = ['id','trader']
+    # inlines = [OrderdetailAdmin]
 
 
 admin.site.register(Order, OrderAdmin)
@@ -119,11 +119,11 @@ admin.site.register(Order, OrderAdmin)
 
 class SellDetailAdmin(admin.ModelAdmin):
     model = SellDetail
-    list_display = ['id','sell', 'item', 'quantity',
-                    'price', 'total', 'date', 'status']
-    list_editable = ['price', 'quantity', 'status']
-    list_filter = ['item', 'date']
-    list_max_show_all = False
+    # list_display = ['id','sell', 'item', 'quantity',
+    #                 'price', 'total', 'date', 'status']
+    # list_editable = ['price', 'quantity', 'status']
+    # list_filter = ['item', 'date']
+    # list_max_show_all = False
 
 
 admin.site.register(SellDetail, SellDetailAdmin)
