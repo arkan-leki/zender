@@ -1,1 +1,1 @@
-python manage.py runserver 127.0.12.1:8000
+python manage.py runserver 127.0.8.1:8000
