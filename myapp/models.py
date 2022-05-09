@@ -280,7 +280,7 @@ class Vendor(models.Model):
                             (totall.totallint - totall.totalback)
                         totallSells = decimal.Decimal(totallSells)
                         MongtotallSells[date.strftime('%Y-%m')] = totallSells
-                grouptotallSells[group.name] = MongtotallSells
+                if(MongtotallSells) : grouptotallSells[group.name] = MongtotallSells 
         return grouptotallSells
 
     @property
