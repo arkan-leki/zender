@@ -40,6 +40,7 @@ class TraderSerializer(serializers.ModelSerializer):
 
 class SellDetailSerializer(serializers.ModelSerializer):
     sell_vendorID = serializers.ReadOnlyField(source='sell.vendor.id')
+
     class Meta:
         model = SellDetail
         fields = '__all__'
@@ -129,7 +130,7 @@ class GroupXSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Group
-        fields = ['id', 'name', 'phone', 'image', 'add_date', 'status', 'items', 'vendors', 'totallSellMonthly', 'oldAccs',  'paymentByMonth', 
+        fields = ['id', 'name', 'phone', 'image', 'add_date', 'status', 'items', 'vendors', 'totallSellMonthly', 'oldAccs',  'paymentByMonth',
                   'totallSell', 'totallOrder', 'payments', 'paymentsMonthly', 'loans', 'buys', 'banks', 'totallBuy', 'items']
 
 
@@ -168,7 +169,7 @@ class VendorXSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Vendor
-        fields = ['id', 'name', 'totallSell', 'totallSellGroup']
+        fields = ['id', 'name', 'totallSell', 'totallSellGroup', 'status']
 
 
 class BankSerializer(serializers.ModelSerializer):
@@ -313,7 +314,7 @@ class LocalXSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = LocalCompany
-        fields = ['id', 'name', 'phone', 'code', 'region', 'region_name', 'location', 'image', 'add_date', 'status', 'zip_code', 'state', 'country',  'alarm', 
+        fields = ['id', 'name', 'phone', 'code', 'region', 'region_name', 'location', 'image', 'add_date', 'status', 'zip_code', 'state', 'country',  'alarm',
                   'owner_name', 'totallSell', 'mawe', 'totallPay', 'totallOld', 'totallOldloan', 'totallOldincome', 'exchange', 'totallSellback', 'date']
         # fields = ['id', 'name', 'phone', 'code', 'region', 'location', 'image', 'add_date', 'status', 'zip_code', 'state', 'country',
         #           'owner_name', 'totallSell', 'mawe', 'totallPay', 'exchange', 'totallSellback', 'attempts', 'date', 'payment_compnay', 'oldacc_compnay']
